@@ -11,13 +11,67 @@ class VObjectEventTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->expected = array(
+            'basic_1.ics' => array(
+                'href' => '/url',
+                'etag' => 'etag',
+                'allDay' => false,
+                'title' => 'One more test',
+                'description' => 'Test',
+                'uid' => 'BDC3A3B5-8F42-467A-95A5-68AA001EA285',
+                'location' => 'Some place',
+                'transp' => 'OPAQUE',
+                'icalendar_class' => 'PUBLIC',
+                'start' => '2013-01-09T21:00:00+0100',
+                'end' => '2013-01-09T22:00:00+0100',
+            ),
+            'duration.ics' => array(
+                'href' => '/url',
+                'etag' => 'etag',
+                'allDay' => false,
+                'duration' => 'PT2H',
+                'title' => 'Event with no DTEND and defined DURATION',
+                'uid' => 'BDC3A3B5-8F42-467A-95A5-68AA001EA285',
+                'start' => '2013-01-09T21:00:00+0100',
+                'end' => '2013-01-09T23:00:00+0100',
+            ),
+            'allday_no_dtend.ics' => array(
+                'href' => '/url',
+                'etag' => 'etag',
+                'allDay' => true,
+                'title' => 'All day event with no DTEND',
+                'uid' => 'BDC3A3B5-8F42-467A-95A5-68AA001EA285',
+                'start' => '2013-01-09T00:00:00+0000',
+                'end' => '2013-01-10T00:00:00+0000',
+            ),
             'basic_allday_1.ics' => array(
                 'href' => '/url',
                 'etag' => 'etag',
                 'allDay' => true,
+                'uid' => '35e58430-8726-4dc0-8693-8d2dba94b308',
+                'transp' => 'TRANSPARENT',
                 'title' => 'Basic all day event',
                 'start' => '2013-01-09T00:00:00+0000',
                 'end' => '2013-01-10T00:00:00+0000',
+            ),
+            'basic_allday_2.ics' => array(
+                'href' => '/url',
+                'etag' => 'etag',
+                'allDay' => true,
+                'title' => 'All day',
+                'start' => '2013-01-09T00:00:00+0100',
+                'end' => '2013-01-10T00:00:00+0100',
+            ),
+            'line_break_description.ics' => array(
+                'href' => '/url',
+                'etag' => 'etag',
+                'allDay' => false,
+                'title' => 'Line breaks',
+                'uid' => 'E7B7C221-7F86-4EB2-BF71-4537C0A70FE2',
+                'description' => "This\nis\na\ntest",
+                'transp' => 'OPAQUE',
+                'icalendar_class' => 'PUBLIC',
+                'start' => '2013-01-09T21:00:00+0100',
+                'end' => '2013-01-09T22:00:00+0100',
             ),
         );
 
@@ -66,7 +120,7 @@ class VObjectEventTest extends \PHPUnit_Framework_TestCase
         foreach ($this->expected as $f => $expected_value) {
             $vevent = new VObjectEvent($this->resources[$f]->VEVENT, '/url', 'etag');
             $res = $vevent->toArray();
-            $this->assertEquals($res, $expected_value);
+            $this->assertEquals($res, $expected_value, $f . ' parse result wasn\'t the expected one');
         }
     }
 
