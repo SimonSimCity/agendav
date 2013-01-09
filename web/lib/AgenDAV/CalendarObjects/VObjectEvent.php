@@ -117,7 +117,7 @@ class VObjectEvent implements IEvent
         $result['allDay'] = false;
         if ($this->vevent->DTSTART->getDateType() == VObject\Property\DateTime::DATE) {
             $result['allDay'] = true;
-        } elseif ($start->format('Hi') == '0000' && $start->diff($end)->format('s') == '86400') {
+        } elseif ($start->format('Hi') == '0000' && (($end->getTimestamp() - $start->getTimestamp()) % 86400) == 0) {
             $result['allDay'] = true;
         }
 
@@ -128,18 +128,11 @@ class VObjectEvent implements IEvent
                 continue;
             }
 
-            switch ($name) {
-                case 'SUMMARY':
-                case 'UID':
-                case 'LOCATION':
-                case 'CLASS':
-                case 'TRANSP':
-                case 'RECURRENCE-ID':
-                    $result[$index] = $property->value;
-                    break;
-                case 'DURATION':
-                    $result[$index] = '';
-                    break;
+            $result[$index] = $property->value;
+
+            // TODO: make recurrent events editable
+            if ($name == 'RRULE') {
+                $result['editable'] = false;
             }
         }
 
