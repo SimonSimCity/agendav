@@ -29,13 +29,17 @@ interface IEvent
 
     public function getEtag();
 
-    public function getVEVENT();
+    public function getCalendar();
+
+    public function getVevent();
 
     public function setHref($href);
 
     public function setEtag($etag);
 
-    public function setVEVENT($vevent);
+    public function setCalendar(\AgenDAV\Data\CalendarInfo $calendar);
+
+    public function setVevent(\Sabre\VObject\Component\VEvent $vevent);
 
     /**
      * Generates a suitable array for fullcalendar
