@@ -2,6 +2,7 @@
 namespace AgenDAV\CalendarObjects;
 
 use \Sabre\VObject;
+use \AgenDAV\Data\CalendarInfo;
 
 /*
  * Copyright 2013 Jorge López Pérez <jorge@adobo.org>
@@ -28,6 +29,8 @@ class VObjectEvent implements IEvent
 
     private $etag;
 
+    private $calendar;
+
     private $vevent;
 
     public static $interesting_properties = array(
@@ -42,17 +45,12 @@ class VObjectEvent implements IEvent
         'CLASS' => 'icalendar_class',
     );
 
-    public function __construct($vevent = null, $href = null, $etag = null)
+    public function __construct()
     {
-        if ($vevent !== null) {
-            $this->vevent = $vevent;
-            $this->href = $href;
-            $this->etag = $etag;
-        } else {
-            $vevent = VObject\Component::create('VEVENT');
-            $this->href = null;
-            $this->etag = null;
-        }
+        $this->href = null;
+        $this->calendar = null;
+        $this->etag = null;
+        $this->vevent = null;
     }
 
     public function getHref()
@@ -65,7 +63,12 @@ class VObjectEvent implements IEvent
         return $this->etag;
     }
 
-    public function getVEVENT()
+    public function getCalendar()
+    {
+        return $this->calendar;
+    }
+
+    public function getVevent()
     {
         return $this->vevent;
     }
@@ -80,7 +83,12 @@ class VObjectEvent implements IEvent
         $this->etag = $etag;
     }
 
-    public function setVEVENT($vevent)
+    public function setCalendar(CalendarInfo $calendar)
+    {
+        $this->calendar = $calendar;
+    }
+
+    public function setVevent(VObject\Component\VEvent$vevent)
     {
         $this->vevent = $vevent;
     }
