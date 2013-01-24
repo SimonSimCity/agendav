@@ -31,7 +31,7 @@ interface IEvent
 
     public function getCalendar();
 
-    public function getVevent();
+    public function getVEvent();
 
     public function setHref($href);
 
@@ -39,7 +39,7 @@ interface IEvent
 
     public function setCalendar(\AgenDAV\Data\CalendarInfo $calendar);
 
-    public function setVevent(\Sabre\VObject\Component\VEvent $vevent);
+    public function setVEvent(\Sabre\VObject\Component\VEvent $vevent);
 
     /**
      * Generates a suitable array for fullcalendar

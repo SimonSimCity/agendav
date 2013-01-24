@@ -89,7 +89,7 @@ class VObjectEventTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($event->getHref());
         $this->assertNull($event->getEtag());
         $this->assertNull($event->getCalendar());
-        $this->assertNull($event->getVevent());
+        $this->assertNull($event->getVEvent());
     }
 
     public function testGetSet()
@@ -105,15 +105,15 @@ class VObjectEventTest extends \PHPUnit_Framework_TestCase
         $vevent = \Sabre\VObject\Component::create('VEVENT');
         $vevent->SUMMARY = 'TEST';
 
-        $event->setVevent($vevent);
-        $this->assertEquals($event->getVevent()->SUMMARY, 'TEST');
+        $event->setVEvent($vevent);
+        $this->assertEquals($event->getVEvent()->SUMMARY, 'TEST');
     }
 
     public function testToArray()
     {
         foreach ($this->expected as $f => $expected_value) {
             $event = new VObjectEvent();
-            $event->setVevent($this->resources[$f]->VEVENT);
+            $event->setVEvent($this->resources[$f]->VEVENT);
             $res = $event->toArray();
             $this->assertEquals($res, $expected_value, $f . ' parse result wasn\'t the expected one');
         }
