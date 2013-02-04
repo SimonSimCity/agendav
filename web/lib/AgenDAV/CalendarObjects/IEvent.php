@@ -1,5 +1,5 @@
 <?php 
-namespace AgenDAV\CalendarChannels;
+namespace AgenDAV\CalendarObjects;
 
 /*
  * Copyright 2013 Jorge López Pérez <jorge@adobo.org>

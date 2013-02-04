@@ -88,7 +88,7 @@ class VObjectEvent implements IEvent
         $this->calendar = $calendar;
     }
 
-    public function setVEvent(VObject\Component\VEvent$vevent)
+    public function setVEvent(VObject\Component\VEvent $vevent)
     {
         $this->vevent = $vevent;
     }
