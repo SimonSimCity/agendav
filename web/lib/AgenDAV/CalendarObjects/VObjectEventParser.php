@@ -1,5 +1,7 @@
-<?php
+<?php 
 namespace AgenDAV\CalendarObjects;
+
+use \Sabre\VObject;
 
 /*
  * Copyright 2013 Jorge López Pérez <jorge@adobo.org>
@@ -20,33 +22,18 @@ namespace AgenDAV\CalendarObjects;
  *  along with AgenDAV.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace AgenDAV\CalendarObjects;
-
-interface IEvent
+class VObjectEventParser implements IEventParser
 {
 
-    public function getHref();
-
-    public function getEtag();
-
-    public function getCalendar();
-
-    public function getVEvent();
-
-    public function setHref($href);
-
-    public function setEtag($etag);
-
-    public function setCalendar(\AgenDAV\Data\CalendarInfo $calendar);
-
-    public function setVEvent(\Sabre\VObject\Component\VEvent $vevent);
-
     /**
-     * Generates a suitable array for fullcalendar
-     * 
+     * Expands a CalDAV resource into events
+     *
+     * @param IEvent $resource 
+     * @param \DateTime $start 
+     * @param \DateTime $end 
      * @access public
-     * @throws \UnexpectedValueException If VEVENT is not a valid event
-     * @return Array
+     * @return array Array of IEvent objects, containing expanded events
      */
-    public function toArray();
+    public function expand(IEvent $resource, \DateTime $start, \DateTime $end);
+
 }
