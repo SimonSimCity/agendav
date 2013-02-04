@@ -22,7 +22,7 @@ namespace AgenDAV\CalendarObjects;
 
 namespace AgenDAV\CalendarObjects;
 
-interface IEvent
+interface IResource
 {
 
     public function getHref();
@@ -31,7 +31,7 @@ interface IEvent
 
     public function getCalendar();
 
-    public function getVEvent();
+    public function getComponent();
 
     public function setHref($href);
 
@@ -39,14 +39,18 @@ interface IEvent
 
     public function setCalendar(\AgenDAV\Data\CalendarInfo $calendar);
 
-    public function setVEvent(\Sabre\VObject\Component\VEvent $vevent);
+    public function setComponent($component);
+
+    public function expandEvents(\DateTime $start, \DateTime $end);
 
     /**
-     * Generates a suitable array for fullcalendar
-     * 
+     * Generates a suitable array for fullcalendar. Will only work
+     *
      * @access public
-     * @throws \UnexpectedValueException If VEVENT is not a valid event
+     * @throws \UnexpectedValueException If resource is not a valid vevent
      * @return Array
      */
     public function toArray();
+
+    public function toText();
 }
