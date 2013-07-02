@@ -53,6 +53,7 @@ define( 'ICALCREATOR_VERSION', 'iCalcreator 2.14' );
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-14
+ * @deprecated
  */
 class vcalendar {
             //  calendar property variables
@@ -85,6 +86,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-14
  * @param array $config
+ * @deprecated
  * @return void
  */
   function vcalendar ( $config = array()) {
@@ -123,6 +125,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.16 - 2011-10-28
  * @return string
+ * @deprecated
  */
   function createCalscale() {
     if( empty( $this->calscale )) return FALSE;
@@ -142,6 +145,7 @@ class vcalendar {
  * @since 2.4.8 - 2008-10-21
  * @param string $value
  * @return void
+ * @deprecated
  */
   function setCalscale( $value ) {
     if( empty( $value )) return FALSE;
@@ -157,6 +161,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.16 - 2011-10-28
  * @return string
+ * @deprecated
  */
   function createMethod() {
     if( empty( $this->method )) return FALSE;
@@ -176,6 +181,7 @@ class vcalendar {
  * @since 2.4.8 - 2008-20-23
  * @param string $value
  * @return bool
+ * @deprecated
  */
   function setMethod( $value ) {
     if( empty( $value )) return FALSE;
@@ -196,6 +202,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.12.11 - 2012-05-13
  * @return string
+ * @deprecated
  */
   function createProdid() {
     if( !isset( $this->prodid ))
@@ -217,6 +224,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.6.8 - 2009-12-30
  * @return void
+ * @deprecated
  */
   function _makeProdid() {
     $this->prodid  = '-//'.$this->unique_id.'//NONSGML kigkonsult.se '.ICALCREATOR_VERSION.'//'.strtoupper( $this->language );
@@ -233,6 +241,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 0.3.0 - 2006-08-10
  * @return void
+ * @deprecated
  */
   function _makeUnique_id() {
     $this->unique_id  = ( isset( $_SERVER['SERVER_NAME'] )) ? gethostbyname( $_SERVER['SERVER_NAME'] ) : 'localhost';
@@ -250,6 +259,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.16 - 2011-10-28
  * @return string
+ * @deprecated
  */
   function createVersion() {
     if( empty( $this->version ))
@@ -269,6 +279,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 0.3.0 - 2006-08-10
  * @return void
+ * @deprecated
  */
   function _makeVersion() {
     $this->version = '2.0';
@@ -280,6 +291,7 @@ class vcalendar {
  * @since 2.4.8 - 2008-10-23
  * @param string $value
  * @return void
+ * @deprecated
  */
   function setVersion( $value ) {
     if( empty( $value )) return FALSE;
@@ -296,6 +308,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.16 - 2011-11-01
  * @return string
+ * @deprecated
  */
   function createXprop() {
     if( empty( $this->xprop ) || !is_array( $this->xprop )) return FALSE;
@@ -332,6 +345,7 @@ class vcalendar {
  * @param string $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setXprop( $label, $value, $params=FALSE ) {
     if( empty( $label ))
@@ -354,6 +368,7 @@ class vcalendar {
  * @param mixed $propName, bool FALSE => X-property
  * @param int $propix, optional, if specific property is wanted in case of multiply occurences
  * @return bool, if successfull delete
+ * @deprecated
  */
   function deleteProperty( $propName=FALSE, $propix=FALSE ) {
     $propName = ( $propName ) ? strtoupper( $propName ) : 'X-PROP';
@@ -410,6 +425,7 @@ class vcalendar {
  * @param int $propix, optional, if specific property is wanted in case of multiply occurences
  * @param bool $inclParam=FALSE
  * @return mixed
+ * @deprecated
  */
   function getProperty( $propName=FALSE, $propix=FALSE, $inclParam=FALSE ) {
     $propName = ( $propName ) ? strtoupper( $propName ) : 'X-PROP';
@@ -541,6 +557,7 @@ class vcalendar {
  *                    first argument is ALWAYS component name,
  *                    second ALWAYS component value!
  * @return bool
+ * @deprecated
  */
   function setProperty () {
     $numargs    = func_num_args();
@@ -570,6 +587,7 @@ class vcalendar {
  * @since 2.11.7 - 2012-01-12
  * @param mixed $config
  * @return value
+ * @deprecated
  */
   function getConfig( $config = FALSE ) {
     if( !$config ) {
@@ -675,6 +693,7 @@ class vcalendar {
  * @param mixed  $config
  * @param string $value
  * @return void
+ * @deprecated
  */
   function setConfig( $config, $value = FALSE) {
     if( is_array( $config )) {
@@ -834,6 +853,7 @@ class vcalendar {
  * @since 1.x.x - 2007-04-24
  * @param object $component calendar component
  * @return void
+ * @deprecated
  */
   function addComponent( $component ) {
     $this->setComponent( $component );
@@ -846,6 +866,7 @@ class vcalendar {
  * @param mixed $arg1 ordno / component type / component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return void
+ * @deprecated
  */
   function deleteComponent( $arg1, $arg2=FALSE  ) {
     $argType = $index = null;
@@ -886,6 +907,7 @@ class vcalendar {
  * @param mixed $arg1 optional, ordno/component type/ component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return object
+ * @deprecated
  */
   function getComponent( $arg1=FALSE, $arg2=FALSE ) {
     $index = $argType = null;
@@ -1005,6 +1027,7 @@ class vcalendar {
  * @since 2.6.33 - 2011-01-03
  * @param string $compType component type
  * @return object (reference)
+ * @deprecated
  */
   function & newComponent( $compType ) {
     $config = $this->getConfig();
@@ -1060,6 +1083,7 @@ class vcalendar {
  *                                                 period (implies flat=FALSE)
  *                                FALSE          - one occurance of component only in output array
  * @return array or FALSE
+ * @deprecated
  */
   function selectComponents( $startY=FALSE, $startM=FALSE, $startD=FALSE, $endY=FALSE, $endM=FALSE, $endD=FALSE, $cType=FALSE, $flat=FALSE, $any=TRUE, $split=TRUE ) {
             /* check  if empty calendar */
@@ -1420,6 +1444,7 @@ class vcalendar {
  * @since 2.13.4 - 2012-08-07
  * @param array $selectOptions, (string) key => (mixed) value, (key=propertyName)
  * @return array
+ * @deprecated
  */
   function selectComponents2( $selectOptions ) {
     $output = array();
@@ -1485,6 +1510,7 @@ class vcalendar {
  * @param mixed $arg1 optional, ordno/component type/ component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return void
+ * @deprecated
  */
   function setComponent( $component, $arg1=FALSE, $arg2=FALSE  ) {
     $component->setConfig( $this->getConfig(), FALSE, TRUE );
@@ -1547,6 +1573,7 @@ class vcalendar {
  * @param string $sortArg, optional
  * @return void
  *
+ * @deprecated
  */
   function sort( $sortArg=FALSE ) {
     if( is_array( $this->components )) {
@@ -1653,6 +1680,7 @@ class vcalendar {
  * @param mixed $unparsedtext, optional, strict rfc2445 formatted, single property string or array of property strings
  * @return bool FALSE if error occurs during parsing
  *
+ * @deprecated
  */
   function parse( $unparsedtext=FALSE ) {
     $nl = $this->getConfig( 'nl' );
@@ -1879,6 +1907,7 @@ class vcalendar {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.16 - 2011-10-28
  * @return string
+ * @deprecated
  */
   function createCalendar() {
     $calendarInit = $calendarxCaldecl = $calendarStart = $calendar = '';
@@ -1969,6 +1998,7 @@ class vcalendar {
  * @param bool $utf8Encode
  * @param bool $gzip
  * @return redirect
+ * @deprecated
  */
   function returnCalendar( $utf8Encode=FALSE, $gzip=FALSE ) {
     $filename = $this->getConfig( 'filename' );
@@ -1998,6 +2028,7 @@ class vcalendar {
  * @param string $filename optional
  * @param string $delimiter optional
  * @return bool
+ * @deprecated
  */
   function saveCalendar( $directory=FALSE, $filename=FALSE, $delimiter=FALSE ) {
     if( $directory )
@@ -2029,6 +2060,7 @@ class vcalendar {
  * @param string $delimiter optional
  * @param int timeout optional, default 3600 sec
  * @return redirect/FALSE
+ * @deprecated
  */
   function useCachedCalendar( $directory=FALSE, $filename=FALSE, $delimiter=FALSE, $timeout=3600) {
     if ( $directory && ctype_digit( (string) $directory ) && !$filename ) {
@@ -2076,6 +2108,7 @@ class vcalendar {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-14
+ * @deprecated
  */
 class calendarComponent {
             //  component property variables
@@ -2109,6 +2142,7 @@ class calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-17
+ * @deprecated
  */
   function calendarComponent() {
     $this->objName         = ( isset( $this->timezonetype )) ?
@@ -2137,6 +2171,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createAction() {
     if( empty( $this->action )) return FALSE;
@@ -2153,6 +2188,7 @@ class calendarComponent {
  * @param string $value  "AUDIO" / "DISPLAY" / "EMAIL" / "PROCEDURE"
  * @param mixed $params
  * @return bool
+ * @deprecated
  */
   function setAction( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2169,6 +2205,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.11.16 - 2012-02-04
  * @return string
+ * @deprecated
  */
   function createAttach() {
     if( empty( $this->attach )) return FALSE;
@@ -2203,6 +2240,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setAttach( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2219,6 +2257,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.11.12 - 2012-01-31
  * @return string
+ * @deprecated
  */
   function createAttendee() {
     if( empty( $this->attendee )) return FALSE;
@@ -2308,6 +2347,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setAttendee( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2383,6 +2423,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createCategories() {
     if( empty( $this->categories )) return FALSE;
@@ -2414,6 +2455,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setCategories( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2430,6 +2472,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 0.9.7 - 2006-11-20
  * @return string
+ * @deprecated
  */
   function createClass() {
     if( empty( $this->class )) return FALSE;
@@ -2446,6 +2489,7 @@ class calendarComponent {
  * @param string $value "PUBLIC" / "PRIVATE" / "CONFIDENTIAL" / iana-token / x-name
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setClass( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2462,6 +2506,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createComment() {
     if( empty( $this->comment )) return FALSE;
@@ -2486,6 +2531,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setComment( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2502,6 +2548,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createCompleted( ) {
     if( empty( $this->completed )) return FALSE;
@@ -2531,6 +2578,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setCompleted( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     if( empty( $year )) {
@@ -2554,6 +2602,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-23
  * @return string
+ * @deprecated
  */
   function createContact() {
     if( empty( $this->contact )) return FALSE;
@@ -2577,6 +2626,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setContact( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -2593,6 +2643,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createCreated() {
     if( empty( $this->created )) return FALSE;
@@ -2613,6 +2664,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param mixed $params optional
  * @return bool
+ * @deprecated
  */
   function setCreated( $year=FALSE, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     if( !isset( $year )) {
@@ -2631,6 +2683,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createDescription() {
     if( empty( $this->description )) return FALSE;
@@ -2654,6 +2707,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setDescription( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) { if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE; }
@@ -2672,6 +2726,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createDtend() {
     if( empty( $this->dtend )) return FALSE;
@@ -2706,6 +2761,7 @@ class calendarComponent {
  * @param string $tz optional
  * @param array params optional
  * @return bool
+ * @deprecated
  */
   function setDtend( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $tz=FALSE, $params=FALSE ) {
     if( empty( $year )) {
@@ -2729,6 +2785,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.4 - 2008-03-07
  * @return string
+ * @deprecated
  */
   function createDtstamp() {
     if( !isset( $this->dtstamp['value']['year'] )  &&
@@ -2748,6 +2805,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.9 - 2011-08-10
  * @return void
+ * @deprecated
  */
   function _makeDtstamp() {
     $d = mktime( date('H'), date('i'), (date('s') - date( 'Z' )), date('m'), date('d'), date('Y'));
@@ -2772,6 +2830,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return TRUE
+ * @deprecated
  */
   function setDtstamp( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     if( empty( $year ))
@@ -2790,6 +2849,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-15
  * @return string
+ * @deprecated
  */
   function createDtstart() {
     if( empty( $this->dtstart )) return FALSE;
@@ -2827,6 +2887,7 @@ class calendarComponent {
  * @param string $tz optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setDtstart( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $tz=FALSE, $params=FALSE ) {
     if( empty( $year )) {
@@ -2850,6 +2911,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createDue() {
     if( empty( $this->due )) return FALSE;
@@ -2885,6 +2947,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setDue( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $tz=FALSE, $params=FALSE ) {
     if( empty( $year )) {
@@ -2908,6 +2971,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createDuration() {
     if( empty( $this->duration )) return FALSE;
@@ -2934,6 +2998,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setDuration( $week, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     if( empty( $week )) if( $this->getConfig( 'allowEmpty' )) $week = null; else return FALSE;
@@ -2961,6 +3026,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createExdate() {
     if( empty( $this->exdate )) return FALSE;
@@ -3005,6 +3071,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setExdate( $exdates, $params=FALSE, $index=FALSE ) {
     if( empty( $exdates )) {
@@ -3064,6 +3131,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createExrule() {
     if( empty( $this->exrule )) return FALSE;
@@ -3078,6 +3146,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setExrule( $exruleset, $params=FALSE, $index=FALSE ) {
     if( empty( $exruleset )) if( $this->getConfig( 'allowEmpty' )) $exruleset = null; else return FALSE;
@@ -3094,6 +3163,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.1.23 - 2012-02-16
  * @return string
+ * @deprecated
  */
   function createFreebusy() {
     if( empty( $this->freebusy )) return FALSE;
@@ -3150,6 +3220,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setFreebusy( $fbType, $fbValues, $params=FALSE, $index=FALSE ) {
     if( empty( $fbValues )) {
@@ -3212,6 +3283,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.12.6 - 2012-04-21
  * @return string
+ * @deprecated
  */
   function createGeo() {
     if( empty( $this->geo )) return FALSE;
@@ -3241,6 +3313,7 @@ class calendarComponent {
  * @param float $longitude
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setGeo( $latitude, $longitude, $params=FALSE ) {
     if(( !empty( $latitude )  || ( 0 == $latitude )) &&
@@ -3266,6 +3339,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createLastModified() {
     if( empty( $this->lastmodified )) return FALSE;
@@ -3286,6 +3360,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return boll
+ * @deprecated
  */
   function setLastModified( $year=FALSE, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     if( empty( $year ))
@@ -3303,6 +3378,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-22
  * @return string
+ * @deprecated
  */
   function createLocation() {
     if( empty( $this->location )) return FALSE;
@@ -3320,6 +3396,7 @@ class calendarComponent {
  * @param string $value
  * @param array params optional
  * @return bool
+ * @deprecated
  */
   function setLocation( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3336,6 +3413,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.6.33 - 2010-12-17
  * @return string
+ * @deprecated
  */
   function createOrganizer() {
     if( empty( $this->organizer )) return FALSE;
@@ -3353,6 +3431,7 @@ class calendarComponent {
  * @param string $value
  * @param array params optional
  * @return bool
+ * @deprecated
  */
   function setOrganizer( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3382,6 +3461,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.3 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createPercentComplete() {
     if( !isset($this->percentcomplete) || ( empty( $this->percentcomplete ) && !is_numeric( $this->percentcomplete ))) return FALSE;
@@ -3398,6 +3478,7 @@ class calendarComponent {
  * @param int $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setPercentComplete( $value, $params=FALSE ) {
     if( empty( $value ) && !is_numeric( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3414,6 +3495,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.3 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createPriority() {
     if( !isset($this->priority) || ( empty( $this->priority ) && !is_numeric( $this->priority ))) return FALSE;
@@ -3430,6 +3512,7 @@ class calendarComponent {
  * @param int $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setPriority( $value, $params=FALSE  ) {
     if( empty( $value ) && !is_numeric( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3446,6 +3529,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.16 - 2008-10-26
  * @return string
+ * @deprecated
  */
   function createRdate() {
     if( empty( $this->rdate )) return FALSE;
@@ -3545,6 +3629,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setRdate( $rdates, $params=FALSE, $index=FALSE ) {
     if( empty( $rdates )) {
@@ -3667,6 +3752,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.6 - 2011-05-15
  * @return string
+ * @deprecated
  */
   function createRecurrenceid() {
     if( empty( $this->recurrenceid )) return FALSE;
@@ -3693,6 +3779,7 @@ class calendarComponent {
  * @param int $sec optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setRecurrenceid( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $tz=FALSE, $params=FALSE ) {
     if( empty( $year )) {
@@ -3716,6 +3803,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.11.24 - 2012-02-23
  * @return string
+ * @deprecated
  */
   function createRelatedTo() {
     if( empty( $this->relatedto )) return FALSE;
@@ -3737,6 +3825,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param index $index, optional
  * @return bool
+ * @deprecated
  */
   function setRelatedTo( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3754,6 +3843,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.3 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createRepeat() {
     if( !isset( $this->repeat ) || ( empty( $this->repeat ) && !is_numeric( $this->repeat ))) return FALSE;
@@ -3770,6 +3860,7 @@ class calendarComponent {
  * @param string $value
  * @param array $params optional
  * @return void
+ * @deprecated
  */
   function setRepeat( $value, $params=FALSE ) {
     if( empty( $value ) && !is_numeric( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3785,6 +3876,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-23
  * @return string
+ * @deprecated
  */
   function createRequestStatus() {
     if( empty( $this->requeststatus )) return FALSE;
@@ -3814,6 +3906,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setRequestStatus( $statcode, $text, $extdata=FALSE, $params=FALSE, $index=FALSE ) {
     if( empty( $statcode ) || empty( $text )) if( $this->getConfig( 'allowEmpty' )) $statcode = $text = null; else return FALSE;
@@ -3833,6 +3926,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-23
  * @return string
+ * @deprecated
  */
   function createResources() {
     if( empty( $this->resources )) return FALSE;
@@ -3863,6 +3957,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setResources( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3879,6 +3974,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createRrule() {
     if( empty( $this->rrule )) return FALSE;
@@ -3893,6 +3989,7 @@ class calendarComponent {
  * @param array $params, optional
  * @param integer $index, optional
  * @return void
+ * @deprecated
  */
   function setRrule( $rruleset, $params=FALSE, $index=FALSE ) {
     if( empty( $rruleset )) if( $this->getConfig( 'allowEmpty' )) $rruleset = null; else return FALSE;
@@ -3908,6 +4005,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.3 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createSequence() {
     if( !isset( $this->sequence ) || ( empty( $this->sequence ) && !is_numeric( $this->sequence ))) return FALSE;
@@ -3924,6 +4022,7 @@ class calendarComponent {
  * @param int $value optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setSequence( $value=FALSE, $params=FALSE ) {
     if(( empty( $value ) && !is_numeric( $value )) && ( '0' != $value ))
@@ -3941,6 +4040,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createStatus() {
     if( empty( $this->status )) return FALSE;
@@ -3957,6 +4057,7 @@ class calendarComponent {
  * @param string $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setStatus( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -3973,6 +4074,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createSummary() {
     if( empty( $this->summary )) return FALSE;
@@ -3990,6 +4092,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setSummary( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4006,6 +4109,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTransp() {
     if( empty( $this->transp )) return FALSE;
@@ -4022,6 +4126,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setTransp( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4038,6 +4143,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.16 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTrigger() {
     if( empty( $this->trigger )) return FALSE;
@@ -4074,6 +4180,7 @@ class calendarComponent {
  * @param bool $before optional
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setTrigger( $year, $month=null, $day=null, $week=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $relatedStart=TRUE, $before=TRUE, $params=FALSE ) {
     if( empty( $year ) && empty( $month ) && empty( $day ) && empty( $week ) && empty( $hour ) && empty( $min ) && empty( $sec ))
@@ -4181,6 +4288,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTzid() {
     if( empty( $this->tzid )) return FALSE;
@@ -4197,6 +4305,7 @@ class calendarComponent {
  * @param string $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setTzid( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4214,6 +4323,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTzname() {
     if( empty( $this->tzname )) return FALSE;
@@ -4236,6 +4346,7 @@ class calendarComponent {
  * @param string $params, optional
  * @param integer $index, optional
  * @return bool
+ * @deprecated
  */
   function setTzname( $value, $params=FALSE, $index=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4252,6 +4363,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTzoffsetfrom() {
     if( empty( $this->tzoffsetfrom )) return FALSE;
@@ -4268,6 +4380,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setTzoffsetfrom( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4284,6 +4397,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTzoffsetto() {
     if( empty( $this->tzoffsetto )) return FALSE;
@@ -4300,6 +4414,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setTzoffsetto( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4316,6 +4431,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createTzurl() {
     if( empty( $this->tzurl )) return FALSE;
@@ -4332,6 +4448,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return boll
+ * @deprecated
  */
   function setTzurl( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4348,6 +4465,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 0.9.7 - 2006-11-20
  * @return string
+ * @deprecated
  */
   function createUid() {
     if( 0 >= count( $this->uid ))
@@ -4361,6 +4479,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.2.7 - 2007-09-04
  * @return void
+ * @deprecated
  */
   function _makeUid() {
     $date   = date('Ymd\THisT');
@@ -4383,6 +4502,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setUid( $value, $params=FALSE ) {
     if( empty( $value )) return FALSE; // no allowEmpty check here !!!!
@@ -4399,6 +4519,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.4.8 - 2008-10-21
  * @return string
+ * @deprecated
  */
   function createUrl() {
     if( empty( $this->url )) return FALSE;
@@ -4415,6 +4536,7 @@ class calendarComponent {
  * @param string $value
  * @param string $params optional
  * @return bool
+ * @deprecated
  */
   function setUrl( $value, $params=FALSE ) {
     if( empty( $value )) if( $this->getConfig( 'allowEmpty' )) $value = null; else return FALSE;
@@ -4431,6 +4553,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.9.3 - 2011-05-14
  * @return string
+ * @deprecated
  */
   function createXprop() {
     if( empty( $this->xprop )) return FALSE;
@@ -4461,6 +4584,7 @@ class calendarComponent {
  * @param mixed $value
  * @param array $params optional
  * @return bool
+ * @deprecated
  */
   function setXprop( $label, $value, $params=FALSE ) {
     if( empty( $label ))
@@ -4482,6 +4606,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.0.6 - 2006-06-20
  * @return string
+ * @deprecated
  */
   function _createFormat() {
     $objectname                   = null;
@@ -4524,6 +4649,7 @@ class calendarComponent {
  * @param string $attributes property attributes
  * @param string $content property content (optional)
  * @return string
+ * @deprecated
  */
   function _createElement( $label, $attributes=null, $content=FALSE ) {
     switch( $this->format ) {
@@ -4643,6 +4769,7 @@ class calendarComponent {
  * @param array $params  optional
  * @param array $ctrKeys optional
  * @return string
+ * @deprecated
  */
   function _createParams( $params=array(), $ctrKeys=array() ) {
     if( !is_array( $params ) || empty( $params ))
@@ -4727,6 +4854,7 @@ class calendarComponent {
  * @param array $recurlabel
  * @param array $recurdata
  * @return string
+ * @deprecated
  */
   function _format_recur( $recurlabel, $recurdata ) {
     $output = null;
@@ -4819,6 +4947,7 @@ class calendarComponent {
  * @since 2.5.1 - 2008-10-15
  * @param string $propName
  * @return bool
+ * @deprecated
  */
   function _notExistProp( $propName ) {
     if( empty( $propName )) return FALSE; // when deleting x-prop, an empty propName may be used=allowed
@@ -4840,6 +4969,7 @@ class calendarComponent {
  * @since 2.9.6 - 2011-05-14
  * @param mixed $config
  * @return value
+ * @deprecated
  */
   function getConfig( $config = FALSE) {
     if( !$config ) {
@@ -4954,6 +5084,7 @@ class calendarComponent {
  * @param string $value
  * @param bool   $softUpdate
  * @return void
+ * @deprecated
  */
   function setConfig( $config, $value = FALSE, $softUpdate = FALSE ) {
     if( is_array( $config )) {
@@ -5037,6 +5168,7 @@ class calendarComponent {
  * @param mixed $propName, bool FALSE => X-property
  * @param int   $propix, optional, if specific property is wanted in case of multiply occurences
  * @return bool, if successfull delete TRUE
+ * @deprecated
  */
   function deleteProperty( $propName=FALSE, $propix=FALSE ) {
     if( $this->_notExistProp( $propName )) return FALSE;
@@ -5302,6 +5434,7 @@ class calendarComponent {
  * @param array $multiprop, reference to a component property
  * @param int   $propix, reference to removal counter
  * @return bool TRUE
+ * @deprecated
  */
   function deletePropertyM( & $multiprop, & $propix ) {
     if( isset( $multiprop[$propix] ))
@@ -5326,6 +5459,7 @@ class calendarComponent {
  * @param bool $inclParam=FALSE
  * @param bool $specform=FALSE
  * @return mixed
+ * @deprecated
  */
   function getProperty( $propName=FALSE, $propix=FALSE, $inclParam=FALSE, $specform=FALSE ) {
     if( 'GEOLOCATION' == strtoupper( $propName )) {
@@ -5596,6 +5730,7 @@ class calendarComponent {
  * @since 2.13.4 - 2012-08-07
  * @param string $propName
  * @param array  $output, incremented result array
+ * @deprecated
  */
   function _getProperties( $propName, & $output ) {
     if( empty( $output ))
@@ -5661,6 +5796,7 @@ class calendarComponent {
  *                    first argument is ALWAYS component name,
  *                    second ALWAYS component value!
  * @return void
+ * @deprecated
  */
   function setProperty() {
     $numargs    = func_num_args();
@@ -5775,6 +5911,7 @@ class calendarComponent {
  * @param mixed $unparsedtext, optional, strict rfc2445 formatted, single property string or array of strings
  * @return bool FALSE if error occurs during parsing
  *
+ * @deprecated
  */
   function parse( $unparsedtext=null ) {
     if( !empty( $unparsedtext )) {
@@ -6125,6 +6262,7 @@ class calendarComponent {
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.8.8 - 2011-03-15
  * @return object
+ * @deprecated
  */
   function copy() {
     $serialized_contents = serialize( $this );
@@ -6141,6 +6279,7 @@ class calendarComponent {
  * @param mixed $arg1 ordno / component type / component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return void
+ * @deprecated
  */
   function deleteComponent( $arg1, $arg2=FALSE  ) {
     if( !isset( $this->components )) return FALSE;
@@ -6182,6 +6321,7 @@ class calendarComponent {
  * @param mixed $arg1 optional, ordno/component type/ component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return object
+ * @deprecated
  */
   function getComponent ( $arg1=FALSE, $arg2=FALSE ) {
     if( !isset( $this->components )) return FALSE;
@@ -6232,6 +6372,7 @@ class calendarComponent {
  * @since 1.x.x - 2007-04-24
  * @param object $component calendar component
  * @return void
+ * @deprecated
  */
   function addSubComponent ( $component ) {
     $this->setComponent( $component );
@@ -6243,6 +6384,7 @@ class calendarComponent {
  * @since 2.6.33 - 2011-01-03
  * @param string $compType subcomponent type
  * @return object (reference)
+ * @deprecated
  */
   function & newComponent( $compType ) {
     $config = $this->getConfig();
@@ -6274,6 +6416,7 @@ class calendarComponent {
  * @param mixed $arg1 optional, ordno/component type/ component uid
  * @param mixed $arg2 optional, ordno if arg1 = component type
  * @return bool
+ * @deprecated
  */
   function setComponent( $component, $arg1=FALSE, $arg2=FALSE  ) {
     if( !isset( $this->components )) return FALSE;
@@ -6332,6 +6475,7 @@ class calendarComponent {
  * @since 2.11.20 - 2012-02-06
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createSubComponent() {
     $output = null;
@@ -6390,6 +6534,7 @@ class calendarComponent {
  * @since 2.12.17 - 2012-07-15
  * @param string $value
  * @return string
+ * @deprecated
  */
   function _size75( $string ) {
     $tmp             = $string;
@@ -6467,6 +6612,7 @@ class calendarComponent {
  * @since 2.12.16 - 2012-07-16
  * @param string $string
  * @return string
+ * @deprecated
  */
   function _strrep( $string ) {
     switch( $this->format ) {
@@ -6513,6 +6659,7 @@ class calendarComponent {
  * @since 2.6.22 - 2010-10-17
  * @param string $string
  * @return string
+ * @deprecated
  */
   static function _strunrep( $string ) {
     $string = str_replace( '\\\\', '\\',     $string);
@@ -6529,6 +6676,7 @@ class calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class vevent extends calendarComponent {
   var $attach;
@@ -6570,6 +6718,7 @@ class vevent extends calendarComponent {
  * @since 2.8.2 - 2011-05-01
  * @param  array $config
  * @return void
+ * @deprecated
  */
   function vevent( $config = array()) {
     $this->calendarComponent();
@@ -6623,6 +6772,7 @@ class vevent extends calendarComponent {
  * @since 2.10.16 - 2011-10-28
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname    = $this->_createFormat();
@@ -6675,6 +6825,7 @@ class vevent extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class vtodo extends calendarComponent {
   var $attach;
@@ -6717,6 +6868,7 @@ class vtodo extends calendarComponent {
  * @since 2.8.2 - 2011-05-01
  * @param array $config
  * @return void
+ * @deprecated
  */
   function vtodo( $config = array()) {
     $this->calendarComponent();
@@ -6771,6 +6923,7 @@ class vtodo extends calendarComponent {
  * @since 2.5.1 - 2008-11-07
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname    = $this->_createFormat();
@@ -6824,6 +6977,7 @@ class vtodo extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class vjournal extends calendarComponent {
   var $attach;
@@ -6856,6 +7010,7 @@ class vjournal extends calendarComponent {
  * @since 2.8.2 - 2011-05-01
  * @param array $config
  * @return void
+ * @deprecated
  */
   function vjournal( $config = array()) {
     $this->calendarComponent();
@@ -6900,6 +7055,7 @@ class vjournal extends calendarComponent {
  * @since 2.5.1 - 2008-10-12
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname = $this->_createFormat();
@@ -6944,6 +7100,7 @@ class vjournal extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class vfreebusy extends calendarComponent {
   var $attendee;
@@ -6966,6 +7123,7 @@ class vfreebusy extends calendarComponent {
  * @since 2.8.2 - 2011-05-01
  * @param array $config
  * @return void
+ * @deprecated
  */
   function vfreebusy( $config = array()) {
     $this->calendarComponent();
@@ -6998,6 +7156,7 @@ class vfreebusy extends calendarComponent {
  * @since 2.3.1 - 2007-11-19
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname = $this->_createFormat();
@@ -7030,6 +7189,7 @@ class vfreebusy extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class valarm extends calendarComponent {
   var $action;
@@ -7048,6 +7208,7 @@ class valarm extends calendarComponent {
  * @since 2.8.2 - 2011-05-01
  * @param array $config
  * @return void
+ * @deprecated
  */
   function valarm( $config = array()) {
     $this->calendarComponent();
@@ -7078,6 +7239,7 @@ class valarm extends calendarComponent {
  * @since 2.5.1 - 2008-10-22
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname    = $this->_createFormat();
@@ -7106,6 +7268,7 @@ class valarm extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.5.1 - 2008-10-12
+ * @deprecated
  */
 class vtimezone extends calendarComponent {
   var $timezonetype;
@@ -7131,6 +7294,7 @@ class vtimezone extends calendarComponent {
  * @param mixed $timezonetype optional, default FALSE ( STANDARD / DAYLIGHT )
  * @param array $config
  * @return void
+ * @deprecated
  */
   function vtimezone( $timezonetype=FALSE, $config = array()) {
     if( is_array( $timezonetype )) {
@@ -7173,6 +7337,7 @@ class vtimezone extends calendarComponent {
  * @since 2.5.1 - 2008-10-25
  * @param array $xcaldecl
  * @return string
+ * @deprecated
  */
   function createComponent( &$xcaldecl ) {
     $objectname    = $this->_createFormat();
@@ -7205,6 +7370,7 @@ class vtimezone extends calendarComponent {
  *
  * @author Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
  * @since 2.10.1 - 2011-07-16
+ * @deprecated
  *
  */
 class iCalUtilityFunctions {
@@ -7231,6 +7397,7 @@ class iCalUtilityFunctions {
  * @param array $date, date to check
  * @param int $parno, no of date parts (i.e. year, month.. .)
  * @return array $params, property parameters
+ * @deprecated
  */
   public static function _chkdatecfg( $theDate, & $parno, & $params ) {
     if( isset( $params['TZID'] ))
@@ -7289,6 +7456,7 @@ class iCalUtilityFunctions {
  * @param string $text
  * @param string $nl
  * @return string
+ * @deprecated
  */
   public static function convEolChar( & $text, $nl ) {
     $outp = '';
@@ -7343,6 +7511,7 @@ class iCalUtilityFunctions {
  * @param int    $from      an unix timestamp
  * @param int    $to        an unix timestamp
  * @return bool
+ * @deprecated
  */
   public static function createTimezone( & $calendar, $timezone, $xProp=array(), $from=null, $to=null ) {
     if( substr( phpversion(), 0, 3 ) < '5.2' )
@@ -7494,6 +7663,7 @@ class iCalUtilityFunctions {
  * @param array  $datetime  datetime/(date)
  * @param string $tz        timezone
  * @return timestamp
+ * @deprecated
  */
   public static function _date2timestamp( $datetime, $tz=null ) {
     $output = null;
@@ -7518,6 +7688,7 @@ class iCalUtilityFunctions {
  * @param array $datetime
  * @param int $parno optional, default FALSE
  * @return array
+ * @deprecated
  */
   public static function _date_time_array( $datetime, $parno=FALSE ) {
     $output = array();
@@ -7561,6 +7732,7 @@ class iCalUtilityFunctions {
  * @param array $datetime
  * @param int $parno optional, default FALSE
  * @return array
+ * @deprecated
  */
   public static function _date_time_string( $datetime, $parno=FALSE ) {
     // save original input string to return it later
@@ -7655,6 +7827,7 @@ class iCalUtilityFunctions {
  * @param array $startdate
  * @param array $duration
  * @return array duration
+ * @deprecated
  */
   public static function _date2duration( $startdate, $enddate ) {
     $startWdate  = mktime( 0, 0, 0, $startdate['month'], $startdate['day'], $startdate['year'] );
@@ -7678,6 +7851,7 @@ class iCalUtilityFunctions {
  * @since 2.1.1 - 2007-06-24
  * @param array $duration
  * @return array
+ * @deprecated
  */
   public static function _duration_array( $duration ) {
     $output = array();
@@ -7730,6 +7904,7 @@ class iCalUtilityFunctions {
  * @since 2.0.5 - 2007-03-14
  * @param string $duration
  * @return array
+ * @deprecated
  */
   public static function _duration_string( $duration ) {
     $duration = (string) trim( $duration );
@@ -7783,6 +7958,7 @@ class iCalUtilityFunctions {
  * @param array $startdate
  * @param array $duration
  * @return array, date format
+ * @deprecated
  */
   public static function _duration2date( $startdate=null, $duration=null ) {
     if( empty( $startdate )) return FALSE;
@@ -7828,6 +8004,7 @@ class iCalUtilityFunctions {
  * @param int $elseVal optional, return value if not found
  * @param int $preSet optional, return value if already preset
  * @return int
+ * @deprecated
  */
   public static function _existRem( &$array, $expkey, $expval=FALSE, $hitVal=null, $elseVal=null, $preSet=null ) {
     if( $preSet )
@@ -7852,6 +8029,7 @@ class iCalUtilityFunctions {
  * @param array   $datetime
  * @param int     $parno, optional, default 6
  * @return string
+ * @deprecated
  */
   public static function _format_date_time( $datetime, $parno=6 ) {
     if( !isset( $datetime['year'] )  &&
@@ -7902,6 +8080,7 @@ class iCalUtilityFunctions {
  * @since 2.9.9 - 2011-06-17
  * @param array $duration ( week, day, hour, min, sec )
  * @return string
+ * @deprecated
  */
   public static function _format_duration( $duration ) {
     if( isset( $duration['week'] ) ||
@@ -7935,6 +8114,7 @@ class iCalUtilityFunctions {
  * @since 2.11.8 - 2012-01-20
  * @param array $input
  * @return bool
+ * @deprecated
  */
   public static function _isArrayDate( $input ) {
     if( !is_array( $input ))
@@ -7966,6 +8146,7 @@ class iCalUtilityFunctions {
  * @since 2.4.16 - 2008-10-18
  * @param array $input
  * @return bool
+ * @deprecated
  */
   public static function _isArrayTimestampDate( $input ) {
     return ( is_array( $input ) && isset( $input['timestamp'] )) ? TRUE : FALSE ;
@@ -7977,6 +8158,7 @@ class iCalUtilityFunctions {
  * @since 2.4.16 - 2008-10-19
  * @param string $input
  * @return bool
+ * @deprecated
  */
   public static function _isOffset( $input ) {
     $input         = trim( (string) $input );
@@ -8000,6 +8182,7 @@ class iCalUtilityFunctions {
  * @since 2.12.1 - 2012-04-06
  * @param string $timezone, input/output variable reference
  * @return bool
+ * @deprecated
  */
   public static function ms2phpTZ( & $timezone ) {
     if( substr( phpversion(), 0, 3 ) < '5.2' )
@@ -8070,6 +8253,7 @@ class iCalUtilityFunctions {
  * @since 2011-05-02
  * @param string $seconds
  * @return string
+ * @deprecated
  */
   public static function offsetSec2His( $seconds ) {
     if( '-' == substr( $seconds, 0, 1 )) {
@@ -8114,6 +8298,7 @@ class iCalUtilityFunctions {
  * @param array $enddate, optional
  * @return array of recurrence (start-)dates as index
  * @todo BYHOUR, BYMINUTE, BYSECOND, WEEKLY at year end/start
+ * @deprecated
  */
   public static function _recur2date( & $result, $recur, $wdate, $startdate, $enddate=FALSE ) {
     foreach( $wdate as $k => $v ) if( ctype_digit( $v )) $wdate[$k] = (int) $v;
@@ -8513,6 +8698,7 @@ class iCalUtilityFunctions {
  * @since 2.11.15 - 2012-01-31
  * @param array $rexrule
  * @return array
+ * @deprecated
  */
   public static function _setRexrule( $rexrule ) {
     $input          = array();
@@ -8606,6 +8792,7 @@ class iCalUtilityFunctions {
  * @param string $objName optional
  * @param string $tzid optional
  * @return array
+ * @deprecated
  */
   public static function _setDate( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $tz=FALSE, $params=FALSE, $caller=null, $objName=null, $tzid=FALSE ) {
     $input = $parno = null;
@@ -8728,6 +8915,7 @@ class iCalUtilityFunctions {
  * @param int $sec optional
  * @param array $params optional
  * @return array
+ * @deprecated
  */
   public static function _setDate2( $year, $month=FALSE, $day=FALSE, $hour=FALSE, $min=FALSE, $sec=FALSE, $params=FALSE ) {
     $input = null;
@@ -8786,6 +8974,7 @@ class iCalUtilityFunctions {
  * @param array $defaults
  * @param int $index
  * @return void
+ * @deprecated
  */
   public static function _setMval( & $valArr, $value, $params=FALSE, $defaults=FALSE, $index=FALSE ) {
     if( !is_array( $valArr )) $valArr = array();
@@ -8810,6 +8999,7 @@ class iCalUtilityFunctions {
  * @param array $params
  * @param array $defaults
  * @return array
+ * @deprecated
  */
   public static function _setParams( $params, $defaults=FALSE ) {
     if( !is_array( $params))
@@ -8846,6 +9036,7 @@ class iCalUtilityFunctions {
  * @param int $timestamp
  * @param array $step, default array( 'day' => 1 )
  * @return void
+ * @deprecated
  */
   public static function _stepdate( &$date, &$timestamp, $step=array( 'day' => 1 )) {
     foreach( $step as $stepix => $stepvalue )
@@ -8864,6 +9055,7 @@ class iCalUtilityFunctions {
  * @since 2.11.8 - 2012-01-27
  * @param mixed $input
  * @return bool, TRUE on success
+ * @deprecated
  */
   public static function _strDate2arr( & $input ) {
     if( is_array( $input ))
@@ -8924,6 +9116,7 @@ class iCalUtilityFunctions {
  * @param mixed $timestamp
  * @param int $parno
  * @return array
+ * @deprecated
  */
   public static function _timestamp2date( $timestamp, $parno=6 ) {
     if( is_array( $timestamp )) {
@@ -8950,6 +9143,7 @@ class iCalUtilityFunctions {
  * @since 2.6.23 - 2010-10-23
  * @param int $timestamp
  * @return array, duration format
+ * @deprecated
  */
   public static function _timestamp2duration( $timestamp ) {
     $dur         = array();
@@ -8973,6 +9167,7 @@ class iCalUtilityFunctions {
  * @param string $tzTo,   PHP valid new timezone, default 'UTC'
  * @param string $format, date output format, default 'Ymd\THis'
  * @return bool
+ * @deprecated
  */
   public static function transformDateTime( & $date, $tzFrom, $tzTo='UTC', $format = 'Ymd\THis' ) {
     if( substr( phpversion(), 0, 3 ) < '5.2' )
@@ -9007,6 +9202,7 @@ class iCalUtilityFunctions {
  * @since 2.11.4 - 2012-01-11
  * @param string $offset
  * @return integer
+ * @deprecated
  */
   public static function _tz2offset( $tz ) {
     $tz           = trim( (string) $tz );
@@ -9038,6 +9234,7 @@ class iCalUtilityFunctions {
  * $param string $directory, where to save vCards (default FALSE)
  * $param string $ext, vCard file extension (default 'vcf')
  * @return mixed
+ * @deprecated
  */
 function iCal2vCard( $email, $version='2.1', $directory=FALSE, $ext='vcf' ) {
   if( FALSE === ( $pos = strpos( $email, '@' )))
@@ -9126,6 +9323,7 @@ function iCal2vCard( $email, $version='2.1', $directory=FALSE, $ext='vcf' ) {
  * $param string $directory, where to save vCards (default FALSE)
  * $param string $ext, vCard file extension (default 'vcf')
  * @return mixed
+ * @deprecated
  */
 function iCal2vCards( & $calendar, $version='2.1', $directory=FALSE, $ext='vcf' ) {
   $hits   = array();
@@ -9171,6 +9369,7 @@ function iCal2vCards( & $calendar, $version='2.1', $directory=FALSE, $ext='vcf' 
  * @since 2.12.3 - 2012-04-19
  * @param object $calendar, iCalcreator vcalendar instance reference
  * @return string
+ * @deprecated
  */
 function iCal2XML( & $calendar ) {
             /** fix an SimpleXMLElement instance and create root element */
@@ -9694,6 +9893,7 @@ function iCal2XML( & $calendar ) {
  * @param string $content, new subelement content
  * @param array  $params,  new element 'attributes'
  * @return void
+ * @deprecated
  */
 function _addXMLchild( & $parent, $name, $type, $content, $params=array()) {
             /** create new child node */
@@ -9900,6 +10100,7 @@ function _addXMLchild( & $parent, $name, $type, $content, $params=array()) {
  * @param  string $xmlstr
  * @param  array  $iCalcfg iCalcreator config array (opt)
  * @return mixed  iCalcreator instance or FALSE on error
+ * @deprecated
  */
 function & XMLstr2iCal( $xmlstr, $iCalcfg=array()) {
   libxml_use_internal_errors( TRUE );
@@ -9935,6 +10136,7 @@ function & XMLstr2iCal( $xmlstr, $iCalcfg=array()) {
  * @param  string $xmlfile
  * @param  array$iCalcfg iCalcreator config array (opt)
  * @return mixediCalcreator instance or FALSE on error
+ * @deprecated
  */
 function & XMLfile2iCal( $xmlfile, $iCalcfg=array()) {
   libxml_use_internal_errors( TRUE );
@@ -9969,6 +10171,7 @@ function & XMLfile2iCal( $xmlfile, $iCalcfg=array()) {
  * @param  object $xmlobj  SimpleXMLElement
  * @param  array  $iCalcfg iCalcreator config array (opt)
  * @return mixed  iCalcreator instance or FALSE on error
+ * @deprecated
  */
 function & XML2iCal( $xmlobj, $iCalcfg=array()) {
   $iCal = new vcalendar( $iCalcfg );
@@ -10005,6 +10208,7 @@ function & XML2iCal( $xmlobj, $iCalcfg=array()) {
  * @since  2.11.2 - 2012-01-15
  * @param  object $parameters SimpleXMLElement
  * @return array  iCalcreator property parameter array
+ * @deprecated
  */
 function _getXMLParams( & $parameters ) {
   if( 1 > $parameters->count())
@@ -10030,6 +10234,7 @@ function _getXMLParams( & $parameters ) {
  * @param  array  $iCal iCalcreator calendar instance
  * @param  object $component SimpleXMLElement
  * @return void
+ * @deprecated
  */
 function _getXMLComponents( & $iCal, & $component ) {
   $compName = $component->getName();
@@ -10054,6 +10259,7 @@ function _getXMLComponents( & $iCal, & $component ) {
  * @param  array  $iCal iCalcreator calendar instance
  * @param  object $component SimpleXMLElement
  * @return void
+ * @deprecated
  */
 function _getXMLProperties( & $iCal, & $property ) {
   $propName  = $property->getName();
@@ -10218,6 +10424,7 @@ function _getXMLProperties( & $iCal, & $property ) {
  * $param array  $timezonesarray, output from function getTimezonesAsDateArrays (below)
  * $param string $tzid,           time zone identifier
  * $param mixed  $timestamp,      timestamp or a UTC datetime (in array format)
+ * @deprecated
  * @return array, time zone data with keys for 'offsetHis', 'offsetSec' and 'tzname'
  *
  */
@@ -10277,6 +10484,7 @@ function getTzOffsetForDate($timezonesarray, $tzid, $timestamp) {
  * @return array, time zone transition timestamp, array before(offsetHis, offsetSec), array after(offsetHis, offsetSec, tzname)
  *                based on the timezone data in the vcalendar object
  *
+ * @deprecated
  */
 function getTimezonesAsDateArrays($vcalendar) {
     $timezonedata = array();
@@ -10302,6 +10510,7 @@ function getTimezonesAsDateArrays($vcalendar) {
  * @param object $vtzc, an iCalcreator calendar standard/daylight instance
  * @return array, time zone data; array before(offsetHis, offsetSec), array after(offsetHis, offsetSec, tzname)
  *
+ * @deprecated
  */
 function expandTimezoneDates($vtzc) {
     $tzdates = array();

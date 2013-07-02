@@ -22,6 +22,7 @@
 
 /**
  * This class will create and cache DateTimeZone objects
+ * @deprecated
  */
 
 class Timezonemanager {
@@ -31,11 +32,15 @@ class Timezonemanager {
      */
     private $timezones;
 
+    /**
+     * @deprecated
+     */
     function __construct() {
         $this->timezones = array();
     }
 
     /**
+     * @deprecated
      * @param $name string
      * @return DateTimeZone|boolean
      */

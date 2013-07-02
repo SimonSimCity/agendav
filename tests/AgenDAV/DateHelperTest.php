@@ -147,6 +147,7 @@ class DateHelperTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    // TODO: Remove.
     public function testiCalCreatorToDateTime1()
     {
         $sample = array(
@@ -164,6 +165,7 @@ class DateHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($dt->format('YmdHis'), '20121007230000');
     }
 
+    // TODO: Remove.
     public function testiCalCreatorToDateTime2()
     {
         $sample = array(
@@ -186,6 +188,7 @@ class DateHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($d2->invert, 1);
     }
 
+    // TODO: Remove.
     public function testiCalcreatorXCurrentToDateTime()
     {
         $example1 = '2012-10-08';

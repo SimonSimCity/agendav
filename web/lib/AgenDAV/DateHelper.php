@@ -222,6 +222,7 @@ class DateHelper
      * @param string $type DATE-TIME or DATE 
      * @access public
      * @return string
+     * @deprecated
      */
     public static function dateTimeToiCalendar(\DateTime $dt, $type)
     {
@@ -248,6 +249,7 @@ class DateHelper
      * @static
      * @access public
      * @return \DateTime
+     * @deprecated
      */
     public static function iCalcreatorToDateTime($icalcreator_data, \DateTimeZone $tz)
     {
@@ -276,6 +278,7 @@ class DateHelper
      * @param string $str DURATION value
      * @access public
      * @return \DateInterval
+     * @deprecated Use \Sabre\VObject\DateTimeParser::parseDuration() instead.
      */
     public static function durationToDateInterval($str)
     {
@@ -301,6 +304,7 @@ class DateHelper
      * @access public
      * @return \DateTime
      * @throws \InvalidArgumentException
+     * @deprecated
      */
     public static function iCalcreatorXCurrentToDateTime($str, \DateTimeZone $tz)
     {
