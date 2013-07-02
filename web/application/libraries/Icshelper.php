@@ -46,7 +46,7 @@ class Icshelper {
         $this->CI = $ci;
 
         // Timezone
-        $this->tz = $this->CI->timezonemanager->getTz(
+        $this->tz = new DateTimeZone(
                 $this->CI->config->item('default_timezone'));
 
         $this->date_frontend_format_pref = $this->CI->config->item('default_date_format');
@@ -64,7 +64,7 @@ class Icshelper {
 
     /**
      * Creates a new iCalendar resource
-     * 
+     *
      * Property keys can be lowercase
      *
      * Returns generated guid, FALSE on error. $generated will be filled with
@@ -84,11 +84,8 @@ class Icshelper {
 
         if ($allday) {
             // Discard timezone
-            $tz = $this->CI->timezonemanager->getTz('UTC');
+            $tz = new DateTimeZone('UTC');
         }
-
-        // Add VTIMEZONE
-        $this->add_vtimezone($ical, $tz->getName());
 
         $vevent =& $ical->newComponent('vevent');
 
@@ -172,7 +169,7 @@ class Icshelper {
         $result = array();
 
         // Dates
-        $utc = $this->CI->timezonemanager->getTz('UTC');
+        $utc = new DateTimeZone('UTC');
         $date_start = new DateTime($start, $utc);
         $date_end = new DateTime($end, $utc);
 
@@ -249,7 +246,7 @@ class Icshelper {
      * Parses an VEVENT for Fullcalendar
      */
     function parse_vevent_fullcalendar($vevent, 
-            $href, $etag, $calendar = 'calendario', $tz, $timezones) {
+            $href, $etag, $calendar = 'calendario') {
 
         $this_event = array(
                 'href' => $href,
@@ -258,7 +255,7 @@ class Icshelper {
                 'disableDragging' => FALSE,
                 'disableResizing' => FALSE,
                 'ignoreTimezone' => TRUE,
-                'timezone' => $tz->getName(),
+                'timezone' => $this->tz->getName(),
                 );
 
         // Start and end date
@@ -323,7 +320,7 @@ class Icshelper {
                 $orig_end = clone $end;
                 $end =
                     $this->CI->dates->x_current2datetime($current_dtend[1],
-                            $tz);
+                            $this->tz);
 
             }
         }
@@ -527,7 +524,7 @@ class Icshelper {
         $this_event['visible_reminders'] = array();
         $this_event['reminders'] = array();
 
-        $valarms = $this->parse_valarms($vevent, $timezones);
+        $valarms = $this->parse_valarms($vevent);
 
         foreach ($valarms as $order => $reminder) {
             $this_event['visible_reminders'][] = $order;

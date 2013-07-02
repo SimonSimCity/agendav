@@ -82,9 +82,9 @@ class Event extends MY_Controller
         $this->date_format = DateHelper::getDateFormatFor('date', $this->date_format_pref);
         $this->time_format = DateHelper::getTimeFormatFor('date', $this->time_format_pref);
 
-        $this->tz = $this->timezonemanager->getTz(
+        $this->tz = \Sabre\VObject\TimeZoneUtil::getTimeZone(
                 $this->config->item('default_timezone'));
-        $this->tz_utc = $this->timezonemanager->getTz('UTC');
+        $this->tz_utc = new DateTimeZone('UTC');
 
         $this->output->set_content_type('application/json');
     }
@@ -235,10 +235,9 @@ class Event extends MY_Controller
         $start = null;
         $end = null;
 
-        $tz = isset($p['timezone']) ? 
-            $this->timezonemanager->getTz($p['timezone']) : 
-            $this->timezonemanager->getTz(
-                    $this->config->item('default_timezone'));
+        $tz = isset($p['timezone']) ?
+            \Sabre\VObject\TimeZoneUtil::getTimeZone($p['timezone']) :
+            $this->tz;
 
 
         // Additional validations
@@ -434,15 +433,12 @@ class Event extends MY_Controller
 
 
             $resource = $this->icshelper->parse_icalendar($res['data']);
-            $timezones = $this->icshelper->get_timezones($resource);
             $vevent = null;
             // TODO: recurrence-id?
             $modify_pos = $this->icshelper->find_component_position($resource, 'VEVENT', array(), $vevent);
             if (is_null($vevent)) {
                 $this->_throw_error( $this->i18n->_('messages', 'error_eventnofound'));
             }
-
-            $tz = $this->icshelper->detect_tz($vevent, $timezones);
 
             // Change every property
             $force_new_value = 
@@ -605,12 +601,6 @@ class Event extends MY_Controller
             $this->_throw_error( $this->i18n->_('messages', 'error_eventnotfound'));
         }
 
-        $tz = $this->icshelper->detect_tz($vevent, $timezones);
-
-        /*
-        log_message('INTERNALS', 'PRE: ['.$tz.'] ' 
-                . $vevent->createComponent($x));
-                */
 
         // Distinguish between these two options
         if ($type == 'drag') {
@@ -622,57 +612,53 @@ class Event extends MY_Controller
                     $new_vevent = $this->icshelper->make_start($vevent, $tz, null, $dur_string, 'DATE');
                     $new_vevent = $this->icshelper->make_end($new_vevent, $tz, null, $dur_string, 'DATE');
                 } else {
-                    // From all day to normal event
-                    // Use default timezone
-                    $tz = $this->tz;
-
                     // Add VTIMEZONE
-                    $this->icshelper->add_vtimezone($ical, $tz->getName(), $timezones);
+                    $this->icshelper->add_vtimezone($ical, $this->tz->getName(), $timezones);
 
                     // Set start date using default timezone instead of UTC
                     $start = $this->icshelper->extract_date($vevent,
-                            'DTSTART', $tz);
+                            'DTSTART', $this->tz);
                     $start_obj = $start['result'];
                     $start_obj->add(DateHelper::durationToDateInterval($dur_string));
                     $new_vevent = $this->icshelper->make_start(
                             $vevent,
-                            $tz,
+                            $this->tz,
                             $start_obj,
                             null,
                             'DATE-TIME',
-                            $tz->getName()
+                            $this->tz->getName()
                     );
                     $new_vevent = $this->icshelper->make_end(
                             $new_vevent,
-                            $tz,
+                            $this->tz,
                             $start_obj,
                             'PT1H',
                             'DATE-TIME',
-                            $tz->getName()
+                            $this->tz->getName()
                     );
                 }
             } else {
                 // was_allday = false
                 $force = ($allday == 'true' ? 'DATE' : null);
-                $new_vevent = $this->icshelper->make_start($vevent, $tz, null, $dur_string, $force);
+                $new_vevent = $this->icshelper->make_start($vevent, $this->tz, null, $dur_string, $force);
                 if ($allday == 'true') {
-                    $new_start = $this->icshelper->extract_date($new_vevent, 'DTSTART', $tz);
-                    $new_vevent = $this->icshelper->make_end($new_vevent, $tz, $new_start['result'], 'P1D', $force);
+                    $new_start = $this->icshelper->extract_date($new_vevent, 'DTSTART', $this->tz);
+                    $new_vevent = $this->icshelper->make_end($new_vevent, $this->tz, $new_start['result'], 'P1D', $force);
                 } else {
-                    $new_vevent = $this->icshelper->make_end($new_vevent, $tz, null, $dur_string, $force);
+                    $new_vevent = $this->icshelper->make_end($new_vevent, $this->tz, null, $dur_string, $force);
                 }
             }
         } else {
-            $new_vevent = $this->icshelper->make_end($vevent, $tz, null, $dur_string);
+            $new_vevent = $this->icshelper->make_end($vevent, $this->tz, null, $dur_string);
 
             // Check if DTSTART == DTEND
-            $new_dtstart = $this->icshelper->extract_date($new_vevent, 'DTSTART', $tz);
-            $new_dtend = $this->icshelper->extract_date($new_vevent, 'DTEND', $tz);
+            $new_dtstart = $this->icshelper->extract_date($new_vevent, 'DTSTART', $this->tz);
+            $new_dtend = $this->icshelper->extract_date($new_vevent, 'DTEND', $this->tz);
             if ($new_dtstart['result'] == $new_dtend['result']) {
                 // Avoid this
                 $new_vevent = $this->icshelper->make_end(
                         $vevent,
-                        $tz,
+                        $this->tz,
                         null,
                         ($new_dtend['value'] == 'DATE' ? 'P1D' : 'PT60M')
                 );
