@@ -19,6 +19,8 @@ Release notes
 * AgenDAV now uses a new logging system based on Monolog. :confval:`show_in_log` has been replaced by a
   new :confval:`enable_debug` option.
 
+* iCalcreator has been replaced by SabreTooth VObject
+
 * Database changes are required: TODO
 
 .. _v1.2.6.2:

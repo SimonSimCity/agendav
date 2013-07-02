@@ -24,7 +24,7 @@ AgenDAV is possible thanks to the following projects:
 * [CodeIgniter](http://codeigniter.com)
 * [DAViCal](http://www.davical.org/)
 * [AWL, Andrew's Web Libraries](http://andrew.mcmillan.net.nz/projects/awl)
-* [iCalCreator](http://www.kigkonsult.se/iCalcreator/)
+* [SabreTooth VObject](https://github.com/fruux/sabre-vobject)
 * [FullCalendar](http://arshaw.com/fullcalendar/)
 * [jQuery](http://jquery.com)
 * [jQuery UI](http://jqueryui.com)
