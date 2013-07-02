@@ -22,6 +22,9 @@
 class Caldav2json extends MY_Controller
 {
 
+    /**
+     * @var AgenDAV\User $user
+     */
     private $user;
 
     function __construct() {
@@ -47,6 +50,8 @@ class Caldav2json extends MY_Controller
     function principal_search() {
         $result = array();
         $term = $this->input->get('term', true);
+
+        /** @var AgenDAV\CalDAV\CURLClient $client */
         $client = $this->container['client'];
 
         if (!empty($term)) {

@@ -24,10 +24,29 @@ use \AgenDAV\Data\CalendarInfo;
 class Calendar extends MY_Controller
 {
 
+    /**
+     * @var array
+     */
     private $calendar_colors;
+
+    /**
+     * @var AgenDAV\User $user
+     */
     private $user;
+
+    /**
+     * @var AgenDAV\CalDAV\CURLClient
+     */
     private $client;
+
+    /**
+     * @var AgenDAV\Data\Preferences
+     */
     private $prefs;
+
+    /**
+     * @var AgenDAV\CalDAV\URLGenerator
+     */
     private $urlgenerator;
 
     function __construct() {
@@ -60,8 +79,11 @@ class Calendar extends MY_Controller
      * other users with the current one)
      */
     function all() {
+
+        /** @var AgenDAV\CalendarFinder $calendarfinder */
         $calendarfinder = $this->container['calendarfinder'];
         $calendars = $calendarfinder->getAll();
+
         $calendar_attrs = array();
         foreach ($calendars as $calendar => $calobj) {
             $calendar_attrs[$calendar] = $calobj->getAll();

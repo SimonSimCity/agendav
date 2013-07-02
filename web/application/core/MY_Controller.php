@@ -20,10 +20,91 @@
  */
 
 use \AgenDAV\Data\Permissions;
-use \AgenDAV\Data\SinglePermission;
 
 class MY_Controller extends CI_Controller
 {
+
+    /**
+     * @var CI_Migration
+     */
+    public $migration;
+
+    /**
+     * @var CI_Session
+     */
+    public $session;
+
+    /**
+     * @var CI_Encrypt
+     */
+    public $encrypt;
+
+    /**
+     * @var Timezonemanager
+     * @deprecated
+     */
+    public $timezonemanager;
+
+    /**
+     * @var Dates
+     */
+    public $dates;
+
+    /**
+     * @var Recurrence
+     */
+    public $recurrence;
+
+    /**
+     * @var Icshelper
+     */
+    public $icshelper;
+
+    /**
+     * @var CI_Input
+     */
+    public $input;
+
+    /**
+     * @var CI_Output
+     */
+    public $output;
+
+    /**
+     * @var CI_Config
+     */
+    public $config;
+
+    /**
+     * @var CI_Log
+     */
+    public $log;
+
+    /**
+     * @var CI_Form_validation
+     */
+    public $form_validation;
+
+    /**
+     * @var I18n
+     */
+    public $i18n;
+
+    /**
+     * @var Preferences
+     */
+    public $preferences;
+
+    /**
+     * @var Shared_calendars
+     */
+    public $shared_calendars;
+
+    /**
+     * @var CI_Loader
+     */
+    public $load;
+
     public function __construct() {
         parent::__construct();
         $this->container = new Pimple();

@@ -28,6 +28,10 @@ class Icshelper {
     private $tz;
 
     private $date_format; // Date format given by lang file
+    /**
+     * @var MY_Controller
+     */
+    public $CI;
 
     private $date_frontend_format_pref;
     private $date_frontend_format;
@@ -37,7 +41,9 @@ class Icshelper {
 
     function __construct() {
 
-        $this->CI =& get_instance();
+        /** @var MY_Controller $ci */
+        $ci =& get_instance();
+        $this->CI = $ci;
 
         // Timezone
         $this->tz = $this->CI->timezonemanager->getTz(
@@ -156,10 +162,11 @@ class Icshelper {
      * Expands a list of resources to repeated events, depending on
      * recurrence rules and recurrence exceptions/modifications
      *
-     * @param array()   $resources  Resources returned by GetEvents
+     * @param string[][]   $resources  Resources returned by GetEvents
      * @param int       $start      Start timestamp
      * @param int       $end        End timestamp
      * @param string        $calendar       Current calendar
+     * @return array
      */
     function expand_and_parse_events($resources, $start, $end, $calendar) {
         $result = array();
@@ -402,9 +409,6 @@ class Icshelper {
         // Internal fullCalendar id
         $this_event['id'] = $calendar . $this_event['uid'];
 
-
-
-
         // Is this an all day event?
         $this_event['allDay'] = FALSE;
 
@@ -446,9 +450,7 @@ class Icshelper {
                         DateInterval('PT1H'));
             }
 
-
             $this_event['orig_allday'] = TRUE;
-
         } else {
             $this_event['orig_allday'] = FALSE;
         }
@@ -582,12 +584,13 @@ class Icshelper {
      * Useful for replacing existing components by using GetComponents() to
      * save resources directly
      *
-     * @param   iCalComponent   $reosurce   Full iCalComponent VCALENDAR
+     * @param   calendarComponent   $resource   Full iCalComponent VCALENDAR
      * @param   string  $type   VEVENT, VTIMEZONE, etc
-     * @param   conditions  Associative array. Possible keys:
+     * @param   array $conditions  Associative array. Possible keys:
      *                       - RECURRENCE-ID
      *                       - ?
-     * @param   iCalComponent   The found object
+     * @param   calendarComponent $comp   The found object
+     * @return boolean
      */
     function find_component_position($resource, $type, 
             $conditions = array(), &$comp) {
@@ -605,7 +608,7 @@ class Icshelper {
                         $conditions['recurrence-id']) {
                     $found = $i;
                 }
-            } else if (!isset($conditions['recurrence-id'])) {
+            } else {
                 $found = $i;
             }
 
@@ -648,14 +651,13 @@ class Icshelper {
 
     /**
      * Gets DTSTART/other property timezone from a component
-     *
      */
     function detect_tz($component, $tzs, $prop = 'dtstart') {
         $dtstart = $component->getProperty($prop, FALSE, TRUE);
         $val = $dtstart['value'];
         $params = $dtstart['params'];
         $has_z = isset($val['tz']) ? ($val['tz']=='Z') : FALSE;
-        $value = $this->paramvalue($params, 'value');;
+        $value = $this->paramvalue($params, 'value');
         $used_tz = null;
         if ($has_z || $value == 'DATE') {
             $used_tz = $this->CI->timezonemanager->getTz('UTC');
@@ -684,6 +686,7 @@ class Icshelper {
      * @param string $increment
      * @param string $force_new_value_type
      * @param string $force_new_tzid
+     * @return void
      */
     function make_start($component, $tz,
             $new_start = null,
@@ -693,7 +696,6 @@ class Icshelper {
 
         $value = null;
         $format = null;
-        $params = array();
 
         $info = $this->extract_date($component, 'DTSTART', $tz);
         // No current DTSTART?
@@ -740,12 +742,14 @@ class Icshelper {
 
     /**
      * Sets a component end value
-     * 
-     * @param iCalComponent $component
+     *
+     * @param calendarComponent $component
      * @param DateTimeZone $tz      Used TZ
-     * @param DateTime $new_start
+     * @param DateTime $new_end
      * @param string $increment
      * @param string $force_new_value_type
+     * @param String $force_new_tzid
+     * @return calendarComponent
      */
     function make_end($component, $tz,
             $new_end = null,
@@ -861,10 +865,10 @@ class Icshelper {
      * uppercased) on given component. DTSTART, DTEND and
      * DURATION are ignored, use make_start and make_end instead
      *
-     * @param iCalComponent $component
+     * @param calendarComponent $component
      * @param array $properties
+     * @return calendarComponent
      */
-
     function change_properties($component, $properties) {
         $properties = array_change_key_case($properties, CASE_UPPER);
 
@@ -953,12 +957,11 @@ class Icshelper {
      * Add a VTIMEZONE using the specified TZID
      * If VTIMEZONE was already added, do nothing
      *
-     * @param   iCalcomponent
-     * @param   string  Timezone id to add
-     * @param   array   (Optional) result from get_timezones()
-     * @return  Used TZID, even when it was not added
+     * @param calendarComponent $resource
+     * @param string $tzid
+     * @param array $timezones
+     * @return  string Used TZID, even when it was not added
      */
-
     function add_vtimezone(&$resource, $tzid, $timezones = array()) {
         if ($tzid != 'UTC' && !isset($timezones[$tzid])) {
             $res = iCalUtilityFunctions::createTimezone($resource,
@@ -976,7 +979,7 @@ class Icshelper {
 
     /**
      * Parses a VEVENT resource VALARM definitions
-     * 
+     *
      * Returns an associative array ('n1#' => new Reminder, 'n2#' => new
      * Reminder...), where 'n#' is the order where this VALARM was found
      */

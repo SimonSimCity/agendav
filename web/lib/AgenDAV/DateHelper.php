@@ -221,7 +221,7 @@ class DateHelper
      * @param \DateTime $dt 
      * @param string $type DATE-TIME or DATE 
      * @access public
-     * @return void
+     * @return string
      */
     public static function dateTimeToiCalendar(\DateTime $dt, $type)
     {
@@ -243,7 +243,7 @@ class DateHelper
     /**
      * Converts a DATE-TIME/DATE array from iCalcreator to a \DateTime object
      *
-     * @param Array $id_arr Array from iCalcreator (year, month, day, etc)
+     * @param array $icalcreator_data Array from iCalcreator (year, month, day, etc)
      * @param \DateTimeZone $tz Timezone for given input
      * @static
      * @access public
@@ -257,7 +257,7 @@ class DateHelper
         unset($icalcreator_data['tz']);
 
         $str = '';
-        foreach ($icalcreator_data as $k => $v) {
+        foreach ($icalcreator_data as $v) {
             $str .= $v;
         }
 

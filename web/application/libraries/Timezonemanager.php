@@ -25,18 +25,30 @@
  */
 
 class Timezonemanager {
+
+    /**
+     * @var DateTimeZone[]
+     */
     private $timezones;
 
     function __construct() {
         $this->timezones = array();
     }
 
+    /**
+     * @param $name string
+     * @return DateTimeZone|boolean
+     */
     public function getTz($name) {
         return (isset($this->timezones[$name])) ?
             $this->timezones[$name] :
             $this->createTz($name);
     }
 
+    /**
+     * @param $name string
+     * @return DateTimeZone|boolean
+     */
     private function createTz($name) {
         try {
             $tz = new DateTimeZone($name);
@@ -63,6 +75,10 @@ class Timezonemanager {
         return $tz;
     }
 
+    /**
+     * @param $name string
+     * @return string|boolean
+     */
     private function lookupTz($name)
     {
         //Time zone lookup obtained from: http://zimbra.imladris.sk/download/src/HELIX-720.fbsd/ZimbraServer/conf/tz/windows-names

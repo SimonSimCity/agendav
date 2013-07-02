@@ -25,15 +25,44 @@ use AgenDAV\DateHelper;
 class Event extends MY_Controller
 {
 
+    /**
+     * @var string
+     */
     private $time_format;
+
+    /**
+     * @var string
+     */
     private $time_format_pref;
+
+    /**
+     * @var string
+     */
     private $date_format;
+
+    /**
+     * @var string
+     */
     private $date_format_pref;
 
+    /**
+     * @var DateTimeZone
+     */
     private $tz;
+
+    /**
+     * @var DateTimeZone
+     */
     private $tz_utc;
 
+    /**
+     * @var \AgenDAV\User
+     */
     private $user;
+
+    /**
+     * @var \AgenDAV\CalDAV\CURLClient
+     */
     private $client;
 
     function __construct() {
@@ -74,13 +103,10 @@ class Event extends MY_Controller
      */
     public function all()
     {
-        $returned_events = array();
         $err = 0;
 
         // For benchmarking
         $time_start = microtime(true);
-        $time_end = $time_fetch = -1;
-        $total_fetch = $total_parse = -1;
 
         $calendar = $this->input->get('calendar', true);
         if ($calendar === false) {
@@ -118,7 +144,6 @@ class Event extends MY_Controller
         } else {
             $this->output->set_status_header($err, 'Error');
         }
-            
     }
 
     /**
@@ -176,10 +201,8 @@ class Event extends MY_Controller
     public function modify()
     {
         // Important data to be filled later
-        $etag = '';
-        $href = '';
         $calendar = '';
-        $resource = null;
+
         // Default new properties. To be cleaned
         // on Icshelper library
         $p = $this->input->post(null, true); // XSS
@@ -388,6 +411,7 @@ class Event extends MY_Controller
                 $original_calendar = $p['original_calendar'];
             }
 
+            /** @var $original_calendar string */
             if (!$this->client->isAccessible($original_calendar)) {
                 $this->_throw_exception(
                     $this->i18n->_('messages', 'error_calendarnotfound', array('%calendar' => $original_calendar))

@@ -32,16 +32,23 @@ class CalendarFinder
         $this->channels = array();
     }
 
+    /**
+     * @param CalendarChannels\IChannel $channel
+     */
     public function registerChannel(\AgenDAV\CalendarChannels\IChannel $channel)
     {
         $this->channels[] = $channel;
     }
 
+    /**
+     * @return \AgenDAV\Data\CalendarInfo[]
+     */
     public function getAll()
     {
         $calendars = array();
 
         foreach ($this->channels as $c) {
+            /** @var \AgenDAV\CalendarChannels\IChannel $c */
             $calendars = array_merge($calendars, $c->getCalendars());
         }
 

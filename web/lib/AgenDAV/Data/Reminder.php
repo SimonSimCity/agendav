@@ -30,6 +30,10 @@ class Reminder
     public $before;
     public $qty, $interval;
     public $relatedStart;
+
+    /**
+     * @var \DateTime
+     */
     public $absdatetime, $tdate, $ttime;
 
     public static $intervals = array(
@@ -94,8 +98,8 @@ class Reminder
     }
 
     /**
-     * Assigns the trigger, action and description for the given VALARM
-     component
+     * Assigns the trigger, action and description for the given VALARM component
+     *
      */
     public function assign_properties(&$valarm) {
         if ($this->is_absolute) {
