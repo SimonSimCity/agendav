@@ -20,6 +20,7 @@ namespace AgenDAV;
  *  You should have received a copy of the GNU General Public License
  *  along with AgenDAV.  If not, see <http://www.gnu.org/licenses/>.
  */
+use Sabre\VObject\DateTimeParser;
 
 /**
  * This class parses and generates date and time formats 
@@ -282,17 +283,7 @@ class DateHelper
      */
     public static function durationToDateInterval($str)
     {
-        $invert = 0;
-
-        if ($str[0] == '-') {
-            $invert = 1;
-            $str = substr($str, 1);
-        }
-
-        $interval = new \DateInterval($str);
-        $interval->invert = $invert;
-
-        return $interval;
+        return DateTimeParser::parseDuration($str);
     }
 
     /**
