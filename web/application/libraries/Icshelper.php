@@ -21,13 +21,14 @@
 
 use AgenDAV\Data\Reminder;
 use AgenDAV\DateHelper;
+use Sabre\VObject;
+use Sabre\VObject\Component\VCalendar;
 
 class Icshelper {
     private $config; // for iCalCreator
 
     private $tz;
 
-    private $date_format; // Date format given by lang file
     /**
      * @var MY_Controller
      */
@@ -58,8 +59,6 @@ class Icshelper {
                 'unique_id' =>
                 $this->CI->config->item('icalendar_unique_id'),
                 );
-
-        require_once('iCalcreator.class.php');
     }
 
     /**
@@ -68,16 +67,19 @@ class Icshelper {
      * Property keys can be lowercase
      *
      * Returns generated guid, FALSE on error. $generated will be filled with
-     * new generated resource (iCalComponent object)
+     * new generated resource
+     *
+     * @param array $properties
+     * @param string $new_id
+     * @param DateTimeZone $tz
+     * @param array $reminders
+     * @return VCalendar
      */
-    function new_resource($properties, &$generated, $tz, $reminders =
+    function new_resource($properties, &$new_id, $tz, $reminders =
             array()) {
         $properties = array_change_key_case($properties, CASE_UPPER);
 
-        $contents = '';
-        $ical = new vcalendar($this->config);
-        // Default CALSCALE in standard
-        $ical->setProperty('calscale', 'GREGORIAN');
+        $vcalendar = new VCalendar();
 
         $allday = (isset($properties['ALLDAY']) && $properties['ALLDAY'] ==
                 'true');
@@ -87,20 +89,17 @@ class Icshelper {
             $tz = new DateTimeZone('UTC');
         }
 
-        $vevent =& $ical->newComponent('vevent');
+        $new_id = $this->generate_guid();
 
-        $now = DateHelper::dateTimeToiCalendar(
-            new \DateTime('now', $this->CI->timezonemanager->getTz('UTC')),
-            'DATE-TIME'
-        );
-        $uid = $this->generate_guid();
-
-        $vevent->setProperty('CREATED', $now);
-        $vevent->setProperty('LAST-MODIFIED', $now);
-        $vevent->setProperty('DTSTAMP', $now);
-        $vevent->setProperty('UID', $uid);
-        $vevent->setProperty('SEQUENCE', '0'); // RFC5545, 3.8.7.4
-        $vevent->setProperty('SUMMARY', $properties['SUMMARY']);
+        /** @var Sabre\VObject\Component\VEvent $vevent */
+        $vevent = $vcalendar->add('VEVENT', array(
+            'CREATED' => time(),
+            'LAST-MODIFIED' => time(),
+            'DTSTAMP' => time(),
+            'UID' => $new_id,
+            'SEQUENCE' => '0', // RFC5545, 3.8.7.4
+            'SUMMARY' => $properties['SUMMARY'],
+        ));
 
         // Rest of properties
         $add_prop = array('DTSTART', 'DTEND', 'DESCRIPTION', 'LOCATION',
@@ -108,30 +107,29 @@ class Icshelper {
 
         foreach ($add_prop as $p) {
             if (isset($properties[$p]) && !empty($properties[$p])) {
-                $params = FALSE;
+                $params = null;
 
                 // Generate DTSTART/DTEND
                 if ($p == 'DTSTART' || $p == 'DTEND') {
                     if ($tz->getName() != 'UTC') {
                         $params = array('TZID' => $tz->getName());
                     }
-                    $properties[$p] = $this->CI->dates->datetime2idt(
-                            $properties[$p], $tz);
+
+                    $properties[$p]->setTimeZone($tz);
+
                     // All day: use parameter VALUE=DATE
                     if ($allday) {
                         $params['VALUE'] = 'DATE';
                     }
                 }
-                $vevent->setProperty($p, $properties[$p], $params);
+                $vevent->add($p, $properties[$p], $params);
             }
         }
 
         // VALARM components (reminders)
-        $vevent = $this->set_valarms($vevent, $reminders);
+        $this->set_valarms($vevent, $reminders);
 
-
-        $generated = $ical;
-        return $uid;
+        return $vcalendar;
     }
 
 
@@ -174,68 +172,12 @@ class Icshelper {
         $date_end = new DateTime($end, $utc);
 
         foreach ($resources as $r) {
-            $event_href = $r['href'];
-            $event_etag = $r['etag'];
+            // Catch the exception somewhere global ...
+            $vcalendar = $this->parse_icalendar($r['data']);
+            $vcalendar->expand($date_start, $date_end);
 
-            $ical = new vcalendar($this->config);
-            $res = $ical->parse($r['data']);
-            if ($res === FALSE) {
-                log_message('ERROR', 
-                        "Couldn't parse event with href=" . $calendar . '/'
-                        .$event_href);
-            }
-            $ical->sort();
-
-            $timezones = $this->get_timezones($ical);
-
-            $sy = intval($date_start->format('Y'));
-            $sm = intval($date_start->format('m'));
-            $sd = intval($date_start->format('d'));
-            $ey = intval($date_end->format('Y'));
-            $em = intval($date_end->format('m'));
-            $ed = intval($date_end->format('d'));
-
-            /*
-            log_message('INTERNALS', 'Pidiendo expansión para ' . $sy . '-'
-                    . $sm . '-' . $sd . ' a ' . $ey . '-' . $em . '-' .
-                    $ed);
-            log_message('INTERNALS', $event_href);
-            log_message('INTERNALS', $r['data']);
-            */
-
-            $expand = $ical->selectComponents($sy, $sm, $sd, $ey, $em, $ed,
-                    'vevent', false, true, false);
-
-            if ($expand !== FALSE) {
-                foreach( $expand as $year => $year_arr ) {
-                    foreach( $year_arr as $month => $month_arr ) {
-                        foreach( $month_arr as $day => $day_arr ) {
-                            foreach( $day_arr as $event ) {
-                                $tz = $this->detect_tz($event, $timezones);
-                                $result[] =
-                                    $this->parse_vevent_fullcalendar($event,
-                                        $event_href, $event_etag, $calendar,
-                                        $tz, $timezones);
-                            }
-                        }
-                    }
-                }
-            } else {
-                $expand = $ical->selectComponents($sy, $sm, $sd, $ey, $em, $ed,
-                        'vevent', true, true, false);
-                if ($expand === FALSE) {
-                    log_message('WARNING',
-                            'Event ' . $calendar . $event_href . ' cannot be expanded.');
-                } else {
-                    foreach($expand as $event) {
-                        $tz = $this->detect_tz($event, $timezones);
-                        $result[] =
-                            $this->parse_vevent_fullcalendar($event,
-                                    $event_href, $event_etag, $calendar,
-                                    $tz, $timezones);
-                    }
-                }
-            }
+            foreach($vcalendar->select("VEVENT") as $event)
+                $result[] = $this->parse_vevent_fullcalendar($event, $r['href'], $r['etag'], $calendar);
         }
 
         return $result;
@@ -244,6 +186,11 @@ class Icshelper {
 
     /**
      * Parses an VEVENT for Fullcalendar
+     * @param \Sabre\VObject\Component\VEvent $vevent
+     * @param string $href
+     * @param string $etag
+     * @param string $calendar
+     * @return array|bool
      */
     function parse_vevent_fullcalendar($vevent, 
             $href, $etag, $calendar = 'calendario') {
@@ -259,26 +206,25 @@ class Icshelper {
                 );
 
         // Start and end date
-        $dtstart = $this->extract_date($vevent, 'DTSTART', $tz);
-        $dtend = $this->extract_date($vevent, 'DTEND', $tz);
+        /** @var \Sabre\VObject\Property\ICalendar\DateTime $dtstart */
+        $dtstart = $vevent->{'DTSTART'};
 
         // We have for sure DTSTART
-        $start = $dtstart['result'];
+        $start = $dtstart->getDateTime();
 
         // Do we have DTEND?
-        if (!is_null($dtend)) {
-            $end = $dtend['result'];
+        if (isset($vevent->{'DTEND'})) {
+            $end = $vevent->{'DTEND'}->getDateTime();
         } else {
-            $duration = $vevent->getProperty('duration',
-                    false, false, true);
-
             // Calculate dtend if not present
-            if ($duration !== FALSE) {
-                $end = $this->CI->dates->idt2datetime($duration,
-                        $tz);
+            if (isset($vevent->{'DURATION'})) {
+                /** @var \Sabre\VObject\Property\ICalendar\Duration $duration */
+                $duration = $vevent->{'DURATION'};
+                $end = new DateTime();
+                $end->add($duration->getDateInterval());
             } else {
                 // RFC 2445, p52
-                if ($dtstart['value'] == 'DATE-TIME') {
+                if ($dtstart->hasTime()) {
                     $end = clone $start;
                 } else {
                     $end = clone $start;
@@ -288,38 +234,38 @@ class Icshelper {
         }
 
         // Is this a recurrent event?
-        if (FALSE !== ($current_dtstart =
-                    $vevent->getProperty('x-current-dtstart'))) {
+        if (isset($vevent->{'x-current-dtstart'})) {
+            $current_dtstart = $vevent->{'x-current-dtstart'}->getValue();
             // Is this a multiday event? In that case, ignore this event
 
             // Hack to avoid getProperty() ignore next getProperty() on 
             // RRULE.
-            if (FALSE === $vevent->rrule) {
+            if (!isset($vevent->{'rrule'})) {
                 return FALSE;
             }
 
             $this_event['expanded'] = TRUE;
 
             // Format depends on DTSTART
-            if (!isset($dtstart['property']['value']['hour'])) {
-                $current_dtstart[1] .= ' 00:00:00';
+            if (!$dtstart->hasTime()) {
+                $current_dtstart .= ' 00:00:00';
             }
 
             // Keep a copy
             $orig_start = clone $start;
 
-            $start = $this->CI->dates->x_current2datetime($current_dtstart[1], $tz);
+            $start = $this->CI->dates->x_current2datetime($current_dtstart, $this->tz);
             unset($this_event['end']);
 
-            $current_dtend = $vevent->getProperty('x-current-dtend');
-            if ($current_dtend !== FALSE) {
-                if (!isset($dtstart['property']['value']['hour'])) {
-                    $current_dtend[1] .= ' 00:00:00';
+            if (isset($vevent->{'x-current-dtend'})) {
+                $current_dtend = $vevent->{'x-current-dtend'}->getValue();
+                if (!$dtstart->hasTime()) {
+                    $current_dtend .= ' 00:00:00';
                 }
 
                 $orig_end = clone $end;
                 $end =
-                    $this->CI->dates->x_current2datetime($current_dtend[1],
+                    $this->CI->dates->x_current2datetime($current_dtend,
                             $this->tz);
 
             }
@@ -336,21 +282,14 @@ class Icshelper {
             // TODO: more properties
             // TODO multiple ocurrences of the same property?
             // TODO current-dtstart
-            $prop = $vevent->getProperty($p, FALSE, TRUE);
+            $prop = $vevent->{$p};
 
-            if ($prop === FALSE) {
+            if (empty($prop)) {
                 continue;
             }
 
-            $val = $prop['value'];
-            $params = $prop['params'];
+            $val = $prop->getValue();
             switch ($p) {
-                case 'summary':
-                    $this_event['title'] = $val;
-                    break;
-                case 'uid':
-                    $this_event['uid'] = $val;
-                    break;
                 case 'description':
                     $description = $val;
                     $this_event['description'] = 
@@ -361,7 +300,9 @@ class Icshelper {
                         preg_replace('/\\\n|\\\r/', '<br />', $description);
                     break;
                 case 'rrule':
-                    $this_event['recurrence_components'] = $val;
+                    // TODO: Implement ...
+                    throw new Exception("Not implemented");
+                    /*$this_event['recurrence_components'] = $val;
                     $new_val = trim($vevent->_format_recur('RRULE',
                                 array($prop)));
                     $this_event['rrule'] = $new_val;
@@ -374,24 +315,25 @@ class Icshelper {
                         $this_event['unparseable_rrule'] = TRUE;
                     }
                     // TODO make it editable when able to parse it
-                    $this_event['editable'] = FALSE;
-                    break;
-                case 'duration':
-                    $this_event['duration'] =
-                        iCalUtilityFunctions::_format_duration($val);
-                    break;
-                case 'location':
-                    $this_event['location'] = $val;
+                    $this_event['editable'] = FALSE;*/
                     break;
                 case 'class':
                     $this_event['icalendar_class'] = $val;
                     break;
-                case 'transp':
-                    $this_event['transp'] = $val;
+                case 'summary':
+                    $this_event['title'] = $val;
                     break;
                 case 'recurrence-id':
                     // TODO parse a little bit
                     $this_event['recurrence_id'] = $val;
+                    break;
+                case 'duration':
+                    // TODO: Don't know how to handle that ...
+                    #$val = iCalUtilityFunctions::_format_duration($val);
+                case 'uid':
+                case 'location':
+                case 'transp':
+                    $this_event[$p] = $val;
                     break;
                 default:
                     log_message('ERROR', 
@@ -409,8 +351,7 @@ class Icshelper {
         // Is this an all day event?
         $this_event['allDay'] = FALSE;
 
-        if (isset($dtstart['value']) &&
-                $dtstart['value'] == 'DATE') {
+        if (!$dtstart->hasTime()) {
             $this_event['allDay'] = TRUE;
         } else if (($end->getTimestamp() - $start->getTimestamp())%86400 == 0) {
             if ($start->format('Hi') == '0000') {
@@ -466,7 +407,7 @@ class Icshelper {
         }
 
         // Expanded events
-        if (isset($orig_start)) {
+        if (isset($orig_start) && isset($orig_end)) {
             $orig_start->setTimeZone($this->tz);
             $orig_end->setTimeZone($this->tz);
             $this_event['orig_start'] = $orig_start->format(DateTime::ISO8601);
@@ -535,13 +476,13 @@ class Icshelper {
     }
 
     /**
-     * Parses an iCalendar resource
+     * Parses an iCalendar resource to a VObject
+     * @param $data string
+     * @return VCalendar
+     * @throws Sabre\VObject\ParseException
      */
-    function parse_icalendar($data) {
-        $vcalendar = new vcalendar($this->config);
-        $vcalendar->parse($data);
-
-        return $vcalendar;
+    public function parse_icalendar($data) {
+        return VObject\Reader::read($data);
     }
 
 
@@ -550,6 +491,10 @@ class Icshelper {
      *
      * Returns an associative array with 'tzid' => DateTimeZone('real tz
      * name')
+     *
+     * @param $icalendar VCalendar
+     * @return mixed
+     * @deprecated
      */
     function get_timezones($icalendar) {
         $result = array();
@@ -588,6 +533,7 @@ class Icshelper {
      *                       - ?
      * @param   calendarComponent $comp   The found object
      * @return boolean
+     * @deprecated
      */
     function find_component_position($resource, $type, 
             $conditions = array(), &$comp) {
@@ -619,6 +565,7 @@ class Icshelper {
 
     /**
      * Replaces a component in the n-th position
+     * @deprecated
      */
     function replace_component($resource, $type, $n, $new) {
         $resource->setComponent($new, $type, $n);
@@ -629,25 +576,23 @@ class Icshelper {
     /**
      * Applies a LAST-MODIFIED change on the iCalendar component
      * (VEVENT, etc)
+     * @param Sabre\VObject\Component $component
+     * @return void
      */
     function set_last_modified($component) {
-        $now = $this->CI->dates->datetime2idt();
-
-        $component->setProperty('last-modified', $now);
+        $component->{'last-modified'} = new DateTime();
 
         // SEQUENCE
-        $seq = $component->getProperty('sequence');
-        if ($seq !== FALSE) {
-            $seq = intval($seq);
+        if (isset($component->{'SEQUENCE'})) {
+            $seq = intval($component->{'SEQUENCE'});
             $seq++;
-            $component->setProperty('sequence', $seq);
+            $component->{'SEQUENCE'} = $seq;
         }
-
-        return $component;
     }
 
     /**
      * Gets DTSTART/other property timezone from a component
+     * @deprecated
      */
     function detect_tz($component, $tzs, $prop = 'dtstart') {
         $dtstart = $component->getProperty($prop, FALSE, TRUE);
@@ -677,15 +622,16 @@ class Icshelper {
     /**
      * Sets a component DTSTART value
      * 
-     * @param iCalComponent $component
+     * @param Sabre\VObject\Component $vcomponent
      * @param DateTimeZone $tz      Used TZ
      * @param DateTime $new_start
      * @param string $increment
      * @param string $force_new_value_type
      * @param string $force_new_tzid
      * @return void
+     * @deprecated
      */
-    function make_start($component, $tz,
+    function make_start($vcomponent, $tz,
             $new_start = null,
             $increment = null,
             $force_new_value_type = null,
@@ -694,7 +640,7 @@ class Icshelper {
         $value = null;
         $format = null;
 
-        $info = $this->extract_date($component, 'DTSTART', $tz);
+        $info = $this->extract_date($vcomponent, 'DTSTART', $tz);
         // No current DTSTART?
         if (is_null($info)) {
             $params = array('VALUE' => (is_null($force_new_value_type) ?
@@ -731,10 +677,10 @@ class Icshelper {
             $value->add($this->CI->dates->duration2di($increment));
         }
 
-        $component->setProperty('dtstart', $this->CI->dates->datetime2idt(
+        $vcomponent->setProperty('dtstart', $this->CI->dates->datetime2idt(
                     $value, $tz, $format), $params);
 
-        return $component;
+        return $vcomponent;
     }
 
     /**
@@ -747,6 +693,7 @@ class Icshelper {
      * @param string $force_new_value_type
      * @param String $force_new_tzid
      * @return calendarComponent
+     * @deprecated
      */
     function make_end($component, $tz,
             $new_end = null,
@@ -758,31 +705,31 @@ class Icshelper {
         $format = null;
         $params = array();
 
-        $dtend_info = $this->extract_date($component, 'DTEND', $tz);
+        $dtend_info = $component->{'DTEND'};
 
-        if (is_null($dtend_info)) {
+        if (empty($dtend_info)) {
             // No DTEND in event
-            if (is_null($new_end)) {
-                // Event has DURATION defined. Generate DTEND and remove
-                // DURATION property
-                $dtend_info = $this->getProperty('duration', FALSE, FALSE, TRUE);
+            if (empty($new_end)) {
+                /** @var \Sabre\VObject\Property\ICalendar\Duration $duration */
+                $duration = $component->{'DURATION'};
 
-                if ($dtend_info === FALSE) {
+                if (empty($duration)) {
                     // Something is wrong . No DTEND nor DURATION
                     // Return the component as is
                     log_message('ERROR',
-                            'Event with uid=' . $component->getProperty('uid')
+                            'Event with uid=' . $component->{'UID'}
                             .' has neither DTEND nor DURATION properties');
                     return $component;
                 }
 
-                $value = $this->CI->dates->idt2datetime($dtend, $tz);
-
+                $value = new DateTime();
+                $value->add($duration->getDateInterval());
             }
 
             // Get current DTSTART params
             $dtstart_info = $this->extract_date($component, 'DTSTART', $tz);
-            if (is_null($dtend_info)) {
+
+            if (is_null($dtstart_info)) {
                 // Neither DTSTART nor DTEND!?
                 $params = array('VALUE' => 'DATE-TIME');
             } else {
@@ -834,6 +781,7 @@ class Icshelper {
 
     /**
      * Make easy to parse a DTSTART/DTEND
+     * @deprecated
      */
     function extract_date($component, $name = 'DTSTART', $tz) {
         $p = $component->getProperty($name, FALSE, TRUE);
@@ -851,9 +799,9 @@ class Icshelper {
         $value_parameter = $this->paramvalue($params, 'value', 'DATE-TIME');
 
         return array(
-                'property' => $p,
-                'value' => $value_parameter,
-                'result' => $obj,
+                'property' => $p, // original value ...
+                'value' => $value_parameter, // the time as text
+                'result' => $obj, // DateTime
                 );
     }
 
@@ -865,6 +813,7 @@ class Icshelper {
      * @param calendarComponent $component
      * @param array $properties
      * @return calendarComponent
+     * @deprecated
      */
     function change_properties($component, $properties) {
         $properties = array_change_key_case($properties, CASE_UPPER);
@@ -900,6 +849,7 @@ class Icshelper {
      *
      * Only changed if VALUE is DATE-TIME or TIME
      * Information extracted from RFC 2445, 4.2.19
+     * @deprecated
      */
     function change_tz($component, $old_tz, $new_tzid, $new_tz) {
         $change = array('DTSTART', 'DTEND', 'DUE', 'EXDATE', 'RDATE');
@@ -944,6 +894,7 @@ class Icshelper {
 
     /**
      * Make it easy to access parameters
+     * @deprecated
      */
     function paramvalue($params, $name, $default_val = FALSE) {
         $name = strtoupper($name);
@@ -958,6 +909,7 @@ class Icshelper {
      * @param string $tzid
      * @param array $timezones
      * @return  string Used TZID, even when it was not added
+     * @deprecated
      */
     function add_vtimezone(&$resource, $tzid, $timezones = array()) {
         if ($tzid != 'UTC' && !isset($timezones[$tzid])) {
@@ -979,40 +931,42 @@ class Icshelper {
      *
      * Returns an associative array ('n1#' => new Reminder, 'n2#' => new
      * Reminder...), where 'n#' is the order where this VALARM was found
+     *
+     * @param \Sabre\VObject\Component\VEvent $vevent
+     * @return array
      */
-    function parse_valarms($vevent, $timezones = array()) {
+    function parse_valarms($vevent) {
         $parsed_reminders = array();
 
         $order = 0;
-        while ($valarm = $vevent->getComponent('valarm')) {
+        $valarms = $vevent->select('VALARM');
+        foreach ($valarms as $valarm) {
+            /** @var \Sabre\VObject\Component\VEvent $valarm */
+
             $order++;
             // TODO parse more actions
-            $action = $valarm->getProperty('action');
-            if ($action == 'DISPLAY') {
-                $trigger = $valarm->getProperty('trigger');
-                $reminder = null;
+            switch ($valarm->{'action'}) {
+                case 'DISPLAY':
+                    if (isset($trigger['BEFORE'])) {
+                        // Related to event start/end
+                        $reminder = Reminder::createFrom($valarm->{'TRIGGER'});
+                    } else {
+                        /** @var \DateTime $datetime */
+                        $datetime = $valarm->{'TRIGGER'};
+                        // Use default timezone
+                        $datetime->setTimezone($this->tz);
 
-                if (isset($trigger['before'])) {
-                    // Related to event start/end
-                    $reminder = Reminder::createFrom($trigger);
-                } else {
-                    // Absolute date-time trigger
-                    $tz = $this->detect_tz($valarm, $timezones, 'trigger');
-                    $datetime = $this->CI->dates->idt2datetime($trigger, $tz);
-                    // Use default timezone
-                    $datetime->setTimezone($this->tz);
+                        $reminder = Reminder::createFrom($datetime);
+                        $reminder->tdate =
+                            $datetime->format($this->date_frontend_format);
+                        $reminder->ttime =
+                            $datetime->format($this->time_frontend_format);
+                    }
 
-                    $reminder = Reminder::createFrom($datetime);
-                    $reminder->tdate =
-                        $datetime->format($this->date_frontend_format);
-                    $reminder->ttime =
-                        $datetime->format($this->time_frontend_format);
-                }
-
-                if ($reminder !== null) {
-                    $reminder->order = $order;
-                    $parsed_reminders[$order] = $reminder;
-                }
+                    if (isset($reminder)) {
+                        $reminder->order = $order;
+                        $parsed_reminders[$order] = $reminder;
+                    }
             }
         }
 
@@ -1022,28 +976,36 @@ class Icshelper {
     /**
      * Adds or replaces VALARM components (reminders) for a given VEVENT
      * resource. Removes VALARMs that were deleted by user
+     *
+     * @param \Sabre\VObject\Component $resource
+     * @param Reminder[] $reminders
+     * @param array $old_visible_reminders
+     * @throws Exception
+     * @return void
      */
-    function set_valarms(&$resource, $reminders, $old_visible_reminders =
-            array()) {
+    function set_valarms($resource, $reminders, $old_visible_reminders = array()) {
         foreach ($reminders as $r) {
-            $valarm = new valarm();
-            $valarm = $r->assign_properties($valarm);
+            $valarm = $resource->add('VALARM');
+            $valarm = $r->toVAlarmObject($valarm);
+
             if ($r->order !== FALSE) {
                 $resource = $this->replace_component($resource,
                         'valarm', $r->order, $valarm);
                 unset($old_visible_reminders[$r->order]);
             } else {
-                $resource->setComponent($valarm);
+                $resource->add($valarm);
             }
         }
 
         // Any VALARMs left that was not present?
-        $remove_valarms = array_keys($old_visible_reminders);
-        foreach ($remove_valarms as $n) {
-            $resource->deleteComponent('valarm', $n);
+        if (!empty($old_visible_reminders)) {
+            $remove_valarms = array_keys($old_visible_reminders);
+            foreach ($remove_valarms as $n) {
+                // TODO implement ...
+                throw new Exception("Not implemented");
+                //$resource->remove($n);
+            }
         }
-
-        return $resource;
     }
 
 

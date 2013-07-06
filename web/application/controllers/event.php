@@ -21,6 +21,7 @@
 
 use AgenDAV\Data\Reminder;
 use AgenDAV\DateHelper;
+use Sabre\VObject\Component\VCalendar;
 
 class Event extends MY_Controller
 {
@@ -68,7 +69,9 @@ class Event extends MY_Controller
     function __construct() {
         parent::__construct();
 
-        $this->user = $this->container['user'];
+        /** @var \AgenDAV\User $user */
+        $user = $this->container['user'];
+        $this->user = $user;
 
         if (!$this->user->isAuthenticated()) {
             $this->output->set_status_header('401');
@@ -122,7 +125,9 @@ class Event extends MY_Controller
             log_message('ERROR', 'Requested events from ' . $calendar .' with no start/end'
             );
             $err = 400;
-        } else if ($err == 0) {
+        }
+
+        if ($err == 0) {
             $returned_events = $this->client->fetchEvents($calendar, $start, $end);
             $time_fetch = microtime(true);
             $parsed =
@@ -155,20 +160,15 @@ class Event extends MY_Controller
     {
         $calendar = $this->input->post('calendar', true);
         $uid = $this->input->post('uid', true);
-        $href = $this->input->post('href', true);
         $etag = $this->input->post('etag', true);
 
-        $response = array();
-
-        if ($calendar === false || $uid === false || $href === false ||
-                $etag === false || empty($calendar) || empty($uid) ||
-                empty($href) || empty($calendar) || empty($etag)) {
-            log_message('ERROR', 'Call to delete_event() with no calendar, uid, href or etag');
+        if (empty($calendar) || empty($uid) || empty($etag)) {
+            log_message('ERROR', 'Call to delete_event() with no calendar, uid or etag');
             $this->_throw_error($this->i18n->_('messages',
                         'error_interfacefailure'));
         } else {
             $res = $this->client->deleteResource(
-                    $calendar . $href,
+                    $calendar . $uid . '.ics',
                     $etag);
             if ($res === true) {
                 $this->_throw_success();
@@ -396,8 +396,8 @@ class Event extends MY_Controller
 
         if (!isset($p['modification'])) {
             // New event (resource)
-            $new_uid = $this->icshelper->new_resource($p,
-                    $resource, $this->tz, $reminders);
+            $vcalendar = $this->icshelper->new_resource($p,
+                    $new_uid, $this->tz, $reminders);
             $href = $new_uid . '.ics';
             $etag = '*';
         } else {
@@ -432,10 +432,11 @@ class Event extends MY_Controller
             }
 
 
-            $resource = $this->icshelper->parse_icalendar($res['data']);
-            $vevent = null;
-            // TODO: recurrence-id?
-            $modify_pos = $this->icshelper->find_component_position($resource, 'VEVENT', array(), $vevent);
+            $vcalendar = $this->icshelper->parse_icalendar($res['data']);
+            $vevents = $vcalendar->select('VEVENT');
+
+            $vevent = array_shift($vevents);
+
             if (is_null($vevent)) {
                 $this->_throw_error( $this->i18n->_('messages', 'error_eventnofound'));
             }
@@ -475,13 +476,9 @@ class Event extends MY_Controller
             $vevent = $this->icshelper->change_properties($vevent, $properties);
 
             // Add/change/remove reminders
-            $vevent = $this->icshelper->set_valarms($vevent, $reminders, $visible_reminders);
+            $this->icshelper->set_valarms($vevent, $reminders, $visible_reminders);
 
-            $vevent = $this->icshelper->set_last_modified($vevent);
-            $resource = $this->icshelper->replace_component($resource, 'vevent', $modify_pos, $vevent);
-            if ($resource === false) {
-                $this->_throw_error($this->i18n->_('messages', 'error_internalgen'));
-            }
+            $this->icshelper->set_last_modified($vevent);
 
             // Moving event between calendars
             if ($original_calendar != $calendar) {
@@ -494,7 +491,7 @@ class Event extends MY_Controller
         // PUT on server
         $new_etag = $this->client->putResource(
                 $calendar . $href,
-                $resource->createCalendar(),
+                $vcalendar->serialize(),
                 $etag);
 
         // Error
@@ -591,16 +588,17 @@ class Event extends MY_Controller
 
         // We're prepared to modify the event
         $href = $resource['href'];
-        $ical = $this->icshelper->parse_icalendar($resource['data']);
-        $timezones = $this->icshelper->get_timezones($ical);
+        $vcalendar = $this->icshelper->parse_icalendar($resource['data']);
+        $timezones = $vcalendar->select("VTIMEZONE");
         $vevent = null;
-        // TODO: recurrence-id?
-        $modify_pos = $this->icshelper->find_component_position($ical, 'VEVENT', array(), $vevent);
 
-        if ($vevent === null) {
+        // TODO: recurrence-id?
+        $vevents = $vcalendar->select("VEVENT");
+        if (empty($vevents)) {
             $this->_throw_error( $this->i18n->_('messages', 'error_eventnotfound'));
         }
 
+        $vevent = array_shift($vevents);
 
         // Distinguish between these two options
         if ($type == 'drag') {
@@ -675,16 +673,10 @@ class Event extends MY_Controller
                 $new_vevent->createComponent($x));
                 */
 
-
-        $ical = $this->icshelper->replace_component($ical, 'vevent', $modify_pos, $new_vevent);
-        if ($ical === false) {
-            $this->_throw_error($this->i18n->_('messages', 'error_internalgen'));
-        }
-
         // PUT on server
         $new_etag = $this->client->putResource(
                 $calendar . $href,
-                $ical->createCalendar(),
+                $vcalendar->serialize(),
                 $etag
         );
 
@@ -723,7 +715,7 @@ class Event extends MY_Controller
     {
         $str = $d . ' ' . date($this->time_format);
         try {
-            $obj = DateHelper::frontEndToDateTime(
+            DateHelper::frontEndToDateTime(
                 $str,
                 $this->date_format_pref,
                 $this->time_format_pref,
@@ -755,7 +747,7 @@ class Event extends MY_Controller
     {
         $str = date($this->date_format) .' '. $t;
         try {
-            $obj = DateHelper::frontEndToDateTime(
+            DateHelper::frontEndToDateTime(
                 $str,
                 $this->date_format_pref,
                 $this->time_format_pref,

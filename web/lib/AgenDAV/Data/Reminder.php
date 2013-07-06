@@ -31,6 +31,9 @@ class Reminder
     public $qty, $interval;
     public $relatedStart;
 
+    // TODO add description
+    public $description = 'AgenDAV';
+
     /**
      * @var \DateTime
      */
@@ -100,27 +103,25 @@ class Reminder
     /**
      * Assigns the trigger, action and description for the given VALARM component
      *
+     * @param \Sabre\VObject\Component\VAlarm $valarm
+     * @return \Sabre\VObject\Component\VAlarm
      */
-    public function assign_properties(&$valarm) {
+    public function toVAlarmObject(\Sabre\VObject\Component\VAlarm $valarm) {
         if ($this->is_absolute) {
-            $valarm->setProperty('trigger',
-                    DateHelper::DateTimeToiCalendar($this->absdatetime, 'DATE-TIME'),
-                    array('VALUE' => 'DATE-TIME'));
+            $valarm->add('TRIGGER', $this->absdatetime);
         } else {
-            $valarm->setProperty('trigger',
-                    array(
-                        $this->interval => $this->qty,
-                        'relatedStart' => $this->relatedStart,
-                        'before' => $this->before,
-                        ));
+            $valarm->add('TRIGGER', array(
+                strtoupper($this->interval) => $this->qty,
+                'RELATED' => strtoupper($this->relatedStart),
+                'BEFORE' => strtoupper($this->before),
+            ));
         }
 
-        $valarm->setProperty('action', $this->type);
-        // TODO store description
-        $valarm->setProperty('description', 'AgenDAV');
+        $valarm->add('ACTION', $this->type);
+        $valarm->add('DESCRIPTION', $this->description);
 
-        log_message('INTERNALS', 'Returning VALARM ' .
-                $valarm->createComponent($x));
+        log_message('INTERNALS', 'Updated VALARM Object: ' .
+                $valarm->serialize());
 
         return $valarm;
     }
