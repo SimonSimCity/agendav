@@ -345,7 +345,8 @@ class Timezonemanager {
             "(GMT+12.00) Petropavlovsk-Kamchatsky" => "Asia/Kamchatka",
             "(GMT+12.00) Petropavlovsk-Kamchatsky - Old" => "Asia/Kamchatka",
             "(UTC+13.00) Nuku'alofa" => "Pacific/Tongatapu",
-            "(GMT+13.00) Nuku'alofa" => "Pacific/Tongatapu"
+            "(GMT+13.00) Nuku'alofa" => "Pacific/Tongatapu",
+            "Mitteleuropäische Zeit" => "Europe/Berlin"
         );
 
         if(isset($tzLookup[$name])){
